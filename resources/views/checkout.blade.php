@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="dark">
 <head>
     <title>Checkout</title>
     @vite('resources/css/app.css')
