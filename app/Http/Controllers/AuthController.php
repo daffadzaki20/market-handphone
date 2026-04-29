@@ -16,6 +16,7 @@ class AuthController extends Controller
     public function register(Request $request) {
         User::create([
             'name' => $request->name,
+            'username'=> $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'user'
@@ -30,26 +31,32 @@ class AuthController extends Controller
 
     public function login(Request $request)
 {
+    // 1. Validasi input (gunakan nama 'login' agar fleksibel)
     $request->validate([
-        'email' => 'required|email',
+        'login' => 'required', // Ini bisa berisi email atau username
         'password' => 'required'
     ]);
 
-    if (Auth::attempt([
-    'email' => $request->email,
-    'password' => $request->password
-])) {
+    // 2. Tentukan apakah input adalah email atau username
+    $fieldType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        $request->session()->regenerate(); // 🔥 penting keamanan
+    // 3. Masukkan ke dalam array kredensial
+    $credentials = [
+        $fieldType => $request->login,
+        'password' => $request->password
+    ];
 
-        if (Auth::user()->role == 'admin') {
-            return redirect('/admin');
-        }
+    // 4. Proses Autentikasi
+    if (Auth::attempt($credentials, $request->remember)) {
+        $request->session()->regenerate();
 
-        return redirect('/dashboard');
+        return redirect()->intended('/dashboard');
     }
 
-    return back()->with('error', 'Login gagal');
+    // Jika gagal login
+    return back()->withErrors([
+        'login' => 'Email/Username atau password salah.',
+    ])->onlyInput('login');
 }
 public function logout()
 {

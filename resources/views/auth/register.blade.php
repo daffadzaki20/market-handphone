@@ -31,6 +31,11 @@
                    name="name"
                    placeholder="Nama Lengkap"
                    class="w-full border p-3 rounded-lg focus:ring focus:ring-blue-200">
+                   
+            <input type="text"
+                   name="username"
+                   placeholder="Username"
+                   class="w-full border p-3 rounded-lg focus:ring focus:ring-blue-200">
 
             <input type="email"
                    name="email"

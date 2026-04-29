@@ -1,0 +1,57 @@
+[server] PHP Warning:  require(D:\projek pak fajar\market-handphone/vendor/autoload.php): Failed to open stream: No such file or directory in D:\projek pak fajar\market-handphone\artisan on line 10
+[server] 
+[server] Warning: require(D:\projek pak fajar\market-handphone/vendor/autoload.php): Failed to open stream: No such file or directory in D:\projek pak fajar\market-handphone\artisan on line 10
+[server] 
+[server] Fatal error: Uncaught Error: Failed opening required 'D:\projek pak fajar\market-handphone/vendor/autoload.php' (include_path='D:\xampp\php\PEAR') in D:\projek pak fajar\market-handphone\artisan:10
+[server] Stack trace:
+[server] #0 {main}
+[server]   thrown in D:\projek pak fajar\market-handphone\artisan on line 10
+[server] PHP Fatal error:  Uncaught Error: Failed opening required 'D:\projek pak fajar\market-handphone/vendor/autoload.php' (include_path='D:\xampp\php\PEAR') in D:\projek pak fajar\market-handphone\artisan:10
+[server] Stack trace:
+[server] #0 {main}
+[server]   thrown in D:\projek pak fajar\market-handphone\artisan on line 10
+[logs] PHP Warning:  require(D:\projek pak fajar\market-handphone/vendor/autoload.php): Failed to open stream: No such file or directory in D:\projek pak fajar\market-handphone\artisan on line 10
+[logs] 
+[logs] Warning: require(D:\projek pak fajar\market-handphone/vendor/autoload.php): Failed to open stream: No such file or directory in D:\projek pak fajar\market-handphone\artisan on line 10
+[logs] PHP Fatal error:  Uncaught Error: Failed opening required 'D:\projek pak fajar\market-handphone/vendor/autoload.php' (include_path='D:\xampp\php\PEAR') in D:\projek pak fajar\market-handphone\artisan:10
+[logs] Stack trace:
+[logs] #0 {main}
+[logs]   thrown in D:\projek pak fajar\market-handphone\artisan on line 10
+[logs] 
+[logs] Fatal error: Uncaught Error: Failed opening required 'D:\projek pak fajar\market-handphone/vendor/autoload.php' (include_path='D:\xampp\php\PEAR') in D:\projek pak fajar\market-handphone\artisan:10
+[logs] Stack trace:
+[logs] #0 {main}
+[logs]   thrown in D:\projek pak fajar\market-handphone\artisan on line 10
+[queue] PHP Warning:  require(D:\projek pak fajar\market-handphone/vendor/autoload.php): Failed to open stream: No such file or directory in D:\projek pak fajar\market-handphone\artisan on line 10
+[queue] 
+[queue] Warning: require(D:\projek pak fajar\market-handphone/vendor/autoload.php): Failed to open stream: No such file or directory in D:\projek pak fajar\market-handphone\artisan on line 10
+[queue] 
+[queue] Fatal error: Uncaught Error: Failed opening required 'D:\projek pak fajar\market-handphone/vendor/autoload.php' (include_path='D:\xampp\php\PEAR') in D:\projek pak fajar\market-handphone\artisan:10
+[queue] Stack trace:
+[queue] #0 {main}
+[queue]   thrown in D:\projek pak fajar\market-handphone\artisan on line 10
+[queue] PHP Fatal error:  Uncaught Error: Failed opening required 'D:\projek pak fajar\market-handphone/vendor/autoload.php' (include_path='D:\xampp\php\PEAR') in D:\projek pak fajar\market-handphone\artisan:10
+[queue] Stack trace:
+[queue] #0 {main}
+[queue]   thrown in D:\projek pak fajar\market-handphone\artisan on line 10
+[server] php artisan serve exited with code 255
+--> Sending SIGTERM to other processes..
+[queue] php artisan queue:listen --tries=1 --timeout=0 exited with code 255
+--> Sending SIGTERM to other processes..
+[logs] php artisan pail --timeout=0 exited with code 255
+--> Sending SIGTERM to other processes..
+[vite] 
+[vite] > dev
+[vite] > vite
+[vite] 
+[vite] 
+[vite]   [32m[1mVITE[22m v7.3.2[39m  [2mready in [0m[1m3531[22m[2m[0m ms[22m
+[vite] 
+[vite]   [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
+[vite] [2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[vite] 
+[vite]   [31m[1mLARAVEL[22m v12.58.0[39m  [2mplugin[22m [1mv2.1.0[22m
+[vite] 
+[vite]   [32m➜[39m  [1mAPP_URL[22m: [36mundefined[39m
+Terminate batch job (Y/N)? 
+[vite] npm run dev exited with code 1

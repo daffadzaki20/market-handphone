@@ -33,9 +33,9 @@
 
             @csrf
 
-            <input type="email"
-                   name="email"
-                   placeholder="Email"
+            <input type="text"
+                   name="login"
+                   placeholder="Username/Email"
                    class="w-full border p-3 rounded-lg focus:ring focus:ring-blue-200">
 
             <input type="password"
