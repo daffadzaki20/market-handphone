@@ -20,18 +20,19 @@
         </h1>
 
         <p class="text-gray-500 mb-3">
-            Brand: {{ $product->brand->name }}
+            Brand: {{ $product->brand?->name ?? '-' }}
         </p>
 
         <p class="text-2xl text-green-600 font-bold mb-4">
             Rp {{ number_format($product->price) }}
         </p>
-
+        @if ($brandType === 'hp')
         <div class="space-y-2 text-gray-700 mb-6">
             <p>📱 RAM: {{ $product->ram }}</p>
             <p>💾 Storage: {{ $product->storage }}</p>
             <p>🔋 Battery: {{ $product->battery }}</p>
         </div>
+        @endif
 
         <p class="text-gray-600 mb-6">
             {{ $product->description }}
@@ -42,7 +43,7 @@
             🛒 Beli Sekarang
         </button>
 
-        <a href="/products/handphone" class="block text-center text-blue-500 mt-4">
+        <a href="{{ $brandType === 'aksesoris' ? '/products/aksesoris' : '/products/handphone' }}" class="block text-center text-blue-500 mt-4">
             ← Kembali
         </a>
 

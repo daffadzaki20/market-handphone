@@ -23,10 +23,10 @@
             Login Akun
         </h2>
 
-        @if(session('error'))
-            <p class="text-red-500 text-sm mb-3 text-center">
-                {{ session('error') }}
-            </p>
+        @if($errors->has('login'))
+            <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {{ $errors->first('login') }}
+            </div>
         @endif
 
         <form method="POST" action="/login" class="space-y-4">
@@ -35,13 +35,22 @@
 
             <input type="text"
                    name="login"
+                   value="{{ old('login') }}"
                    placeholder="Username/Email"
-                   class="w-full border p-3 rounded-lg focus:ring focus:ring-blue-200">
+                   class="w-full border p-3 rounded-lg focus:ring focus:ring-blue-200 @error('login') border-red-300 @enderror">
+
+            @error('login')
+                <p class="text-xs text-red-500 -mt-2">{{ $message }}</p>
+            @enderror
 
             <input type="password"
                    name="password"
                    placeholder="Password"
-                   class="w-full border p-3 rounded-lg focus:ring focus:ring-blue-200">
+                   class="w-full border p-3 rounded-lg focus:ring focus:ring-blue-200 @error('password') border-red-300 @enderror">
+
+            @error('password')
+                <p class="text-xs text-red-500 -mt-2">{{ $message }}</p>
+            @enderror
 
             <button type="submit"
                     class="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-semibold">

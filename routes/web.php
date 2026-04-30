@@ -3,8 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\ProductController;
+use App\Models\Brand;
 use App\Models\Product;
+use App\Models\User;
 
 // HOME (LANGSUNG KE LOGIN)
 Route::get('/', function () {
@@ -53,6 +56,10 @@ Route::middleware('auth')->group(function (){
     
         return view('dashboard', compact('products'));
     });
+
+    Route::get('/cart', function () {
+        return view('cart.index');
+    });
     
     
     
@@ -63,37 +70,10 @@ Route::middleware('auth')->group(function (){
     */
     
     // 📱 HANDPHONE
-    Route::get('/products/handphone', function () {
-    
-        $query = App\Models\Product::with('brand')
-            ->where('type', 'hp');
-    
-        // 🔍 SEARCH
-        if (request('search')) {
-            $query->where('name', 'like', '%' . request('search') . '%');
-        }
-    
-        // 🏷️ FILTER BRAND
-        if (request('brand')) {
-            $query->whereHas('brand', function ($q) {
-                $q->where('name', request('brand'));
-            });
-        }
-    
-        $products = $query->get();
-    
-        return view('products.handphone', compact('products'));
-    });
+    Route::get('/products/handphone', [ProductController::class, 'handphoneIndex']);
     
     // 🎧 AKSESORIS
-    Route::get('/products/aksesoris', function () {
-    
-        $products = Product::with('brand')
-            ->where('type', 'aksesoris')
-            ->get();
-    
-        return view('products.aksesoris', compact('products'));
-    });
+    Route::get('/products/aksesoris', [ProductController::class, 'aksesorisIndex']);
     
     
     
@@ -113,7 +93,38 @@ Route::middleware('auth')->group(function (){
             return redirect('/dashboard');
         }
     
-        return view('admin');
+        $totalProducts = Product::query()->count('id');
+        $totalBrands = Brand::query()->count('id');
+        $totalUsers = User::query()->count('id');
+        $handphoneCount = Product::query()->whereHas('brand', function ($b) {
+            $b->where('type', 'hp');
+        })->count('id');
+        $accessoriesCount = Product::query()->whereHas('brand', function ($b) {
+            $b->where('type', 'aksesoris');
+        })->count('id');
+        $totalInventoryValue = Product::query()->selectRaw('COALESCE(SUM(price * stock), 0) as total', [])->value('total');
+
+        $lowStockProducts = Product::with('brand')
+            ->where('stock', '<=', 5)
+            ->orderBy('stock')
+            ->limit(5)
+            ->get();
+
+        $latestProducts = Product::with('brand')
+            ->latest()
+            ->limit(6)
+            ->get();
+
+        return view('admin', compact(
+            'totalProducts',
+            'totalBrands',
+            'totalUsers',
+            'handphoneCount',
+            'accessoriesCount',
+            'totalInventoryValue',
+            'lowStockProducts',
+            'latestProducts'
+        ));
     });
     
     
@@ -136,20 +147,38 @@ Route::middleware('auth')->group(function (){
     |--------------------------------------------------------------------------
     */
     
-    // lihat semua produk
-    Route::get('/products', [ProductController::class, 'index']);
-    
-    // form tambah produk
-    Route::get('/products/create', [ProductController::class, 'create']);
-    
-    // simpan produk
-    Route::post('/products', [ProductController::class, 'store']);
+    // ADMIN CRUD HANDPHONE
+    Route::get('/admin/handphones', [ProductController::class, 'adminHandphoneIndex']);
+    Route::get('/admin/handphones/create', [ProductController::class, 'adminHandphoneCreate']);
+    Route::post('/admin/handphones', [ProductController::class, 'adminHandphoneStore']);
+    Route::get('/admin/handphones/{id}', [ProductController::class, 'adminHandphoneShow']);
+    Route::get('/admin/handphones/{id}/edit', [ProductController::class, 'adminHandphoneEdit']);
+    Route::put('/admin/handphones/{id}', [ProductController::class, 'adminHandphoneUpdate']);
+    Route::delete('/admin/handphones/{id}', [ProductController::class, 'adminHandphoneDestroy']);
+
+    // ADMIN CRUD AKSESORIS
+    Route::get('/admin/aksesoris', [ProductController::class, 'adminAksesorisIndex']);
+    Route::get('/admin/aksesoris/create', [ProductController::class, 'adminAksesorisCreate']);
+    Route::post('/admin/aksesoris', [ProductController::class, 'adminAksesorisStore']);
+    Route::get('/admin/aksesoris/{id}', [ProductController::class, 'adminAksesorisShow']);
+    Route::get('/admin/aksesoris/{id}/edit', [ProductController::class, 'adminAksesorisEdit']);
+    Route::put('/admin/aksesoris/{id}', [ProductController::class, 'adminAksesorisUpdate']);
+    Route::delete('/admin/aksesoris/{id}', [ProductController::class, 'adminAksesorisDestroy']);
+
+    // ADMIN CRUD USERS
+    Route::get('/admin/users', [AdminUserController::class, 'index']);
+    Route::get('/admin/users/create', [AdminUserController::class, 'create']);
+    Route::post('/admin/users', [AdminUserController::class, 'store']);
+    Route::get('/admin/users/{id}/edit', [AdminUserController::class, 'edit']);
+    Route::put('/admin/users/{id}', [AdminUserController::class, 'update']);
+    Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy']);
     
     Route::get('/product/{id}', function ($id) {
     
         $product = Product::with('brand')->findOrFail($id);
-    
-        return view('products.detail', compact('product'));
+        $brandType = $product->brand?->type ?? null;
+        // dd($brandType);
+        return view('products.detail', compact('product', 'brandType'));
     
     });
 });

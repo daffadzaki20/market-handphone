@@ -1,3 +1,46 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Shared blue theme variables for user and admin layouts */
+:root {
+	--mh-primary: #2563eb;
+	--mh-primary-600: #1d4ed8;
+	--mh-primary-soft: #eff6ff;
+	--mh-bg: #f3f4f6;
+	--mh-surface: #ffffff; /* cards / surfaces */
+	--mh-muted: #64748b;
+	--mh-border: #e5e7eb;
+	--mh-surface-hover: #eff6ff;
+	--mh-text: #111827;
+}
+
+.theme-blue body, .theme-blue {
+	background-color: var(--mh-bg);
+	color: var(--mh-text);
+}
+
+.mh-sidebar {
+	background-color: var(--mh-surface);
+	border-right: 1px solid var(--mh-border);
+}
+
+.mh-header {
+	background-color: var(--mh-surface);
+	border-bottom: 1px solid var(--mh-border);
+}
+
+.mh-nav-link { color: var(--mh-muted); }
+.mh-nav-link-active { background-color: var(--mh-primary-soft); color: var(--mh-primary); }
+.mh-logout { color: #ef4444; }
+
+.btn-primary {
+	background-color: var(--mh-primary);
+	color: white;
+}
+
+.card {
+	background-color: var(--mh-surface);
+	border: 1px solid var(--mh-border);
+	border-radius: .5rem;
+}

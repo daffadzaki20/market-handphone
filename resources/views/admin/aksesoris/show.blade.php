@@ -1,0 +1,68 @@
+@extends('layouts.app_admin')
+
+@section('title', 'Detail Aksesoris')
+
+@section('content')
+<div class="space-y-6">
+    <div>
+        <a href="/admin/aksesoris" class="text-sm text-[var(--mh-muted)] hover:text-[var(--mh-text)]">&larr; Kembali ke Data Aksesoris</a>
+    </div>
+
+    <section class="card p-6 rounded-xl">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+                @if($product->image)
+                    <img src="{{ asset('images/products/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-96 object-cover rounded-xl border border-[var(--mh-border)]">
+                @else
+                    <div class="w-full h-96 rounded-xl border border-dashed border-[var(--mh-border)] bg-[var(--mh-bg)] flex items-center justify-center text-[var(--mh-muted)]">
+                        Tidak ada gambar
+                    </div>
+                @endif
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <p class="text-xs uppercase tracking-wider text-[var(--mh-muted)]">Detail Produk Aksesoris</p>
+                    <h2 class="text-2xl font-bold text-[var(--mh-text)] mt-1">{{ $product->name }}</h2>
+                    <p class="text-sm text-[var(--mh-muted)] mt-1">Brand: {{ $product->brand?->name ?? 'Tanpa brand' }}</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="rounded-lg border border-[var(--mh-border)] p-3">
+                        <p class="text-xs text-[var(--mh-muted)]">Harga</p>
+                        <p class="font-bold text-[var(--mh-text)] mt-1">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
+                    </div>
+
+                    <div class="rounded-lg border border-[var(--mh-border)] p-3">
+                        <p class="text-xs text-[var(--mh-muted)]">Stok</p>
+                        <p class="font-bold mt-1 {{ $product->stock <= 5 ? 'text-red-500' : 'text-[var(--mh-text)]' }}">{{ $product->stock }} pcs</p>
+                    </div>
+                </div>
+
+                <div class="rounded-lg border border-[var(--mh-border)] p-3">
+                    <p class="text-xs text-[var(--mh-muted)]">Deskripsi</p>
+                    <p class="text-[var(--mh-text)] mt-2">{{ $product->description ?: '-' }}</p>
+                </div>
+
+                <div class="rounded-lg border border-[var(--mh-border)] p-3">
+                    <p class="text-xs text-[var(--mh-muted)]">Metadata</p>
+                    <p class="text-sm text-[var(--mh-text)] mt-1">Dibuat: {{ $product->created_at?->format('d M Y H:i') }}</p>
+                    <p class="text-sm text-[var(--mh-text)]">Diupdate: {{ $product->updated_at?->format('d M Y H:i') }}</p>
+                </div>
+
+                <div class="flex items-center gap-2 pt-1">
+                    <a href="/admin/aksesoris/{{ $product->id }}/edit" class="px-4 py-2 rounded-lg btn-primary hover:bg-[var(--mh-primary-600)] transition">Edit Produk</a>
+
+                    <form action="/admin/aksesoris/{{ $product->id }}" method="POST" onsubmit="return confirm('Hapus produk ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="px-4 py-2 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition">
+                            Hapus
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+@endsection

@@ -22,57 +22,19 @@
 </form>
 
 <!-- 🏷️ FILTER BRAND -->
-<div class="flex gap-2 mb-6 flex-wrap">
-
-    <!-- Semua -->
+<div class="flex flex-wrap gap-2 mb-4">
     <a href="/products/handphone"
-       class="px-3 py-1 rounded-lg text-sm 
-       {{ request('brand') == null ? 'bg-blue-500 text-white' : 'bg-gray-200' }}">
-        Semua
+       class="px-3 py-1 rounded-full text-sm transition {{ !request('brand') ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+        Semua Brand
     </a>
 
-    <!-- Apple -->
-    <a href="/products/handphone?brand=Apple"
-       class="px-3 py-1 rounded-lg text-sm 
-       {{ request('brand') == 'Apple' ? 'bg-blue-500 text-white' : 'bg-gray-200' }}">
-        Apple
+    @foreach ($brands as $brand)
+    <a href="/products/handphone?brand={{ $brand->slug }}{{ request('search') ? '&search='.request('search') : '' }}"
+       class="px-3 py-1 rounded-full text-sm transition
+       {{ request('brand') == $brand->slug ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+        {{ $brand->name }}
     </a>
-
-    <!-- Samsung -->
-    <a href="/products/handphone?brand=Samsung"
-       class="px-3 py-1 rounded-lg text-sm 
-       {{ request('brand') == 'Samsung' ? 'bg-blue-500 text-white' : 'bg-gray-200' }}">
-        Samsung
-    </a>
-
-    <!-- Xiaomi -->
-    <a href="/products/handphone?brand=Xiaomi"
-       class="px-3 py-1 rounded-lg text-sm 
-       {{ request('brand') == 'Xiaomi' ? 'bg-blue-500 text-white' : 'bg-gray-200' }}">
-        Xiaomi
-    </a>
-
-    <!-- Oppo -->
-    <a href="/products/handphone?brand=Oppo"
-       class="px-3 py-1 rounded-lg text-sm 
-       {{ request('brand') == 'Oppo' ? 'bg-blue-500 text-white' : 'bg-gray-200' }}">
-        Oppo
-    </a>
-
-    <!-- Vivo -->
-    <a href="/products/handphone?brand=Vivo"
-       class="px-3 py-1 rounded-lg text-sm 
-       {{ request('brand') == 'Vivo' ? 'bg-blue-500 text-white' : 'bg-gray-200' }}">
-        Vivo
-    </a>
-
-    <!-- Infinix -->
-    <a href="/products/handphone?brand=Infinix"
-       class="px-3 py-1 rounded-lg text-sm 
-       {{ request('brand') == 'Infinix' ? 'bg-blue-500 text-white' : 'bg-gray-200' }}">
-        Infinix
-    </a>
-
+    @endforeach
 </div>
 
 <!-- 📦 GRID PRODUK -->
@@ -114,6 +76,11 @@
 
     @endforeach
 
+</div>
+
+<!-- PAGINATION -->
+<div class="mt-8">
+    {{ $products->links() }}
 </div>
 
 @endsection

@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('brands', function (Blueprint $table) {
-            $table->id();
-            $table->string('type')->unique();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->timestamps();
+        Schema::table('brands', function (Blueprint $table) {
+            $table->dropUnique('brands_type_unique');
+            $table->index('type');
         });
     }
 
@@ -25,6 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('brands');
+        Schema::table('brands', function (Blueprint $table) {
+            $table->dropIndex(['type']);
+            $table->unique('type');
+        });
     }
 };
