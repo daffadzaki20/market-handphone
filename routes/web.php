@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 use App\Http\Controllers\ProductController;
 use App\Models\Product;
 
@@ -16,11 +18,48 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     
     // LOGIN
-    Route::get('/login', [AuthController::class, 'loginForm']);
+    Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
 });
 
 Route::middleware('auth')->group(function (){
+
+Route::post('/profile/update', function (Request $request) {
+        $user = Auth::user();
+
+        // 1. Validasi Input
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone_number' => 'nullable|string|max:15',
+            'gender' => 'nullable|in:Laki-laki,Perempuan,Lainnya',
+        ]);
+
+        // 2. Update Data User
+        $user->name = $request->name;
+        $user->email = $request->email;
+        
+        if ($request->phone_number) {
+            $user->phone_number = $request->phone_number;
+        }
+        
+        if ($request->gender) {
+            $user->gender = $request->gender;
+        }
+
+        // 3. Gabungkan Tanggal, Bulan, Tahun menjadi format YYYY-MM-DD
+        if ($request->dob_year && $request->dob_month && $request->dob_day) {
+            $bulan = str_pad($request->dob_month, 2, '0', STR_PAD_LEFT); // Ubah 7 jadi 07
+            $hari = str_pad($request->dob_day, 2, '0', STR_PAD_LEFT);    // Ubah 6 jadi 06
+            $user->date_of_birth = $request->dob_year . '-' . $bulan . '-' . $hari;
+        }
+
+        // 4. Simpan ke Database
+        $user->save();
+
+        // 5. Kembali ke halaman profil bawa pesan sukses
+        return back()->with('success', 'Profil berhasil diperbarui!');
+    });
 
     // LOGOUT
     Route::get('/logout', function () {
@@ -28,9 +67,43 @@ Route::middleware('auth')->group(function (){
         return redirect('/login');
     });
     
+    // PROFIL KITA
     Route::get('/profile', function () {
-    return view('profile.index');
-})->middleware('auth');
+        return view('profile.index');
+    });
+
+    Route::get('/profile/bank', function () {
+        return view('profile.bank');
+    });
+
+    Route::get('/profile/alamat', function () {
+        return view('profile.alamat');
+    });
+
+    // 👇 TAMBAHKAN RUTE UPLOAD FOTO DI SINI 👇
+     Route::post('/profile/photo', function (Request $request) {
+        // 1. Validasi file (harus gambar, max 2MB)
+        $request->validate([
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $user = Auth::user();
+
+        // 2. Jika user sudah punya foto lama, hapus dulu dari storage agar tidak menumpuk
+        if ($user->profile_photo && Storage::disk('public')->exists($user->profile_photo)) {
+            Storage::disk('public')->delete($user->profile_photo);
+        }
+
+        // 3. Simpan foto baru ke folder: storage/app/public/profile_photos
+        $path = $request->file('profile_photo')->store('profile_photos', 'public');
+
+        // 4. Update nama file di database user
+        $user->profile_photo = $path;
+        $user->save();
+
+        // 5. Kembalikan ke halaman profil
+        return back();
+    });
     
     /*
     |--------------------------------------------------------------------------

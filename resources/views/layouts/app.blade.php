@@ -41,12 +41,22 @@
             <!-- PROFILE & LOGOUT DROPDOWN -->
             <div class="relative">
                 
-                <!-- Profil Button (Icon) -->
-                <button id="profileButton" class="flex items-center text-gray-500 hover:text-blue-600 focus:outline-none transition-colors">
-                    <svg class="w-8 h-8 p-1 bg-gray-100 rounded-full border border-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                    </svg>
-                </button>
+               <!-- Profil Button (Icon/Photo) -->
+<button id="profileButton" class="flex items-center text-gray-500 hover:text-blue-600 focus:outline-none transition-colors">
+    
+    @if(Auth::check() && Auth::user()->profile_photo)
+        <!-- 1. Tampilkan Foto Profil Jika Ada -->
+        <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" 
+             alt="Profile" 
+             class="w-8 h-8 rounded-full object-cover border border-gray-200 shadow-sm">
+    @else
+        <!-- 2. Tampilkan Icon Default Jika Belum Ada Foto -->
+        <svg class="w-8 h-8 p-1 bg-gray-100 rounded-full border border-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+        </svg>
+    @endif
+    
+</button>
 
                 <!-- Dropdown Menu (Hidden by default) -->
                 <div id="profileDropdown" class="hidden absolute right-0 mt-3 w-48 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden transform transition-all">
