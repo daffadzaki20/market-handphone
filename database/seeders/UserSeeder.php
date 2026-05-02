@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+
 class UserSeeder extends Seeder
 {
     /**
@@ -13,20 +14,27 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        User::create([
-            'name'=>'Admin',
-            'username'=>'admin',
-            'email'=>'admin@example.com',
-            'password'=> Hash::make('admin123'),
-            'role'=>'admin'
-        ]);
-        User::create([
-            'name'=>'Ardian',
-            'username'=>'ardian',
-            'email'=>'ardian@example.com',
-            'password'=> Hash::make('password'),
-            'role'=>'user'
-        ]);
+        // Data Admin
+        User::updateOrCreate(
+            ['email' => 'admin@example.com'], // Kolom unik sebagai kunci pencarian
+            [
+                'name' => 'Admin',
+                'username' => 'admin',
+                'password' => Hash::make('admin123'),
+                'role' => 'admin'
+            ]
+        );
+
+        // Data User Ardian
+        User::updateOrCreate(
+            ['email' => 'ardian@example.com'],
+            [
+                'name' => 'Ardian',
+                'username' => 'ardian',
+                'password' => Hash::make('password'),
+                'role' => 'user',
+                'phone_number' => '081234567890',
+            ]
+        );
     }
 }

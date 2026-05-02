@@ -19,7 +19,6 @@ return new class extends Migration
               ->onDelete('cascade');
 
         $table->string('name');
-        $table->enum('type', ['hp', 'aksesoris']);
         $table->integer('price');
         $table->integer('stock')->default(0);
 

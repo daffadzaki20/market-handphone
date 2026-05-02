@@ -13,7 +13,6 @@ class Product extends Model
     protected $fillable = [
         'brand_id',
         'name',
-        'type',
         'price',
         'stock',
         'image',
@@ -26,5 +25,11 @@ class Product extends Model
     public function brand()
     {
         return $this->belongsTo(Brand::class);
+    }
+
+    // Accessor: derive product type from its Brand
+    public function getTypeAttribute()
+    {
+        return $this->brand?->type ?? null;
     }
 }

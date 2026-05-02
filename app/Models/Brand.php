@@ -10,7 +10,9 @@ class Brand extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name'
+        'type',
+        'name',
+        'slug'
     ];
 
     // RELASI: 1 brand punya banyak products
