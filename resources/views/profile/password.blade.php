@@ -1,5 +1,6 @@
+@extends('layouts.app')
 
-<x-app-layout>
+@section('content')
 
 <!-- Wrapper Utama -->
 <div class="max-w-6xl mx-auto px-4 py-6 md:py-8 flex flex-col md:flex-row gap-4 md:gap-3">
@@ -74,14 +75,20 @@
             <div class="border-t border-gray-100 my-4"></div>
 
             <!-- Menu Logout di Sidebar -->
-            <a href="/logout" class="flex items-center gap-2 font-semibold text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
-                <span class="text-red-500">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                    </svg>
-                </span>
-                Keluar
-            </a>
+            <form method="POST" action="{{ route('logout') }}">
+    @csrf
+    <button type="submit" 
+            class="flex items-center gap-2 font-semibold text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
+        <span class="text-red-500">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            </svg>
+        </span>
+        Keluar
+    </button>
+</form>
+
     </div>
 
     <!-- ========================================== -->
@@ -217,4 +224,4 @@
 </script>
 
 
-</x-app-layout>
+@endsection

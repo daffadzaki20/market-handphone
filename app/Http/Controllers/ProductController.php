@@ -149,7 +149,7 @@ class ProductController extends Controller
         return redirect('/admin/handphones')->with('success', 'Produk handphone berhasil ditambahkan.');
     }
 
-    public function adminHandphoneEdit($id)
+    public function adminHandphoneEdit(int $id)
     {
         $this->ensureAdmin();
 
@@ -161,7 +161,7 @@ class ProductController extends Controller
         return view('admin.handphones.edit', compact('product', 'brands'));
     }
 
-    public function adminHandphoneShow($id)
+    public function adminHandphoneShow(int $id)
     {
         $this->ensureAdmin();
 
@@ -172,7 +172,7 @@ class ProductController extends Controller
         return view('admin.handphones.show', compact('product'));
     }
 
-    public function adminHandphoneUpdate(Request $request, $id)
+    public function adminHandphoneUpdate(Request $request, int $id)
     {
         $this->ensureAdmin();
 
@@ -218,7 +218,7 @@ class ProductController extends Controller
         return redirect('/admin/handphones')->with('success', 'Produk handphone berhasil diupdate.');
     }
 
-    public function adminHandphoneDestroy($id)
+    public function adminHandphoneDestroy(int $id)
     {
         $this->ensureAdmin();
 
@@ -302,7 +302,7 @@ class ProductController extends Controller
         return redirect('/admin/aksesoris')->with('success', 'Produk aksesoris berhasil ditambahkan.');
     }
 
-    public function adminAksesorisEdit($id)
+    public function adminAksesorisEdit(int $id)
     {
         $this->ensureAdmin();
 
@@ -314,7 +314,7 @@ class ProductController extends Controller
         return view('admin.aksesoris.edit', compact('product', 'brands'));
     }
 
-    public function adminAksesorisShow($id)
+    public function adminAksesorisShow(int $id)
     {
         $this->ensureAdmin();
 
@@ -325,7 +325,7 @@ class ProductController extends Controller
         return view('admin.aksesoris.show', compact('product'));
     }
 
-    public function adminAksesorisUpdate(Request $request, $id)
+    public function adminAksesorisUpdate(Request $request, int $id)
     {
         $this->ensureAdmin();
 
@@ -368,7 +368,7 @@ class ProductController extends Controller
         return redirect('/admin/aksesoris')->with('success', 'Produk aksesoris berhasil diupdate.');
     }
 
-    public function adminAksesorisDestroy($id)
+    public function adminAksesorisDestroy(int $id)
     {
         $this->ensureAdmin();
 

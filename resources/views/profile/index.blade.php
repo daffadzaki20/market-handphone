@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
 
     <!-- Wrapper Utama -->
     <div class="max-w-6xl mx-auto px-4 py-6 md:py-8 flex flex-col md:flex-row gap-4 md:gap-3">
@@ -259,4 +261,4 @@
 
     </div>
 
-</x-app-layout>
+@endsection

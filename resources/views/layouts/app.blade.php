@@ -50,6 +50,10 @@
                     <a href="/products/aksesoris" class="pb-1 transition-colors duration-200 {{ request()->is('products/aksesoris') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
                         Aksesoris
                     </a>
+                    <a href="{{ route('orders.index') }}" class="pb-1 transition-colors duration-200 {{ request()->is('orders') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
+                        Pesanan Saya
+                    </a>
+
                 </div>
 
                 <div class="flex items-center gap-5">
@@ -118,8 +122,9 @@
         <!-- ========================================== -->
         <!-- 🔥 Di sinilah isi dari dashboard.blade.php kamu dimasukkan secara otomatis -->
         <main>
-            {{ $slot }} 
-        </main>
+    @yield('content')
+</main>
+
 
     </div>
 

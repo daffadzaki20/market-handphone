@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
 
 <!-- CSS & JS untuk Leaflet Maps -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -676,14 +678,14 @@ function openModalAlamat(isEdit = false) {
     const form = document.getElementById('form-alamat');
 
     if (modal.classList.contains('hidden')) {
-        // Jika bukan mode Edit, reset form ke mode "Tambah"
+        
         if (!isEdit) {
             document.querySelector('#modal-content h3').innerText = 'Tambah Alamat Baru';
             form.action = "{{ route('alamat.store') }}";
             document.getElementById('method-field').innerHTML = '';
             form.reset();
             
-            // Kembalikan dropdown wilayah ke kondisi awal
+            
             ['kabupaten', 'kecamatan', 'desa'].forEach(id => {
                 document.getElementById(id).disabled = true;
                 document.getElementById(id).innerHTML = `<option value="" disabled selected>Pilih...</option>`;
@@ -704,4 +706,4 @@ function openModalAlamat(isEdit = false) {
 }
 </script>
 
-</x-app-layout>
+@endsection

@@ -1,5 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
 
+@section('content')
     <!-- WRAPPER UTAMA (Agar konten rapi di tengah dan tidak nabrak tepi layar) -->
     <div class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -214,4 +215,4 @@
         }
     </style>
 
-</x-app-layout>
+@endsection

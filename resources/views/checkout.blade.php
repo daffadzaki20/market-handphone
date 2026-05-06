@@ -1,5 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
 
+@section('content')
     <!-- PEMBUNGKUS UTAMA -->
     <div class="max-w-5xl mx-auto px-4 pt-6 pb-24 space-y-4">
         
@@ -542,4 +543,4 @@
     </div>
     @endif
 
-</x-app-layout>
+@endsection

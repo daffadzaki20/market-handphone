@@ -1,46 +1,51 @@
-<x-app-layout>
+@extends('layouts.app')
 
-    <!-- WRAPPER UTAMA -->
-    <div class="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+@section('content')
 
-        <h1 class="text-3xl font-black text-gray-800 tracking-tight mb-6">📱 Handphone</h1>
+     <!-- PEMBUNGKUS UTAMA -->
+     <div class="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+         
+         <!-- JUDUL KATEGORI -->
+         <h1 class="text-3xl font-black text-gray-800 tracking-tight mb-6">📱 Handphone</h1>
 
-        <!-- 🔍 SEARCH BAR -->
-        <form method="GET" action="/products/handphone" class="mb-6 flex gap-3" id="searchForm">
-            <div class="relative w-full">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </div>
-                <input type="text"
-                       id="searchInput"
-                       name="search"
-                       value="{{ request('search') }}"
-                       placeholder="Cari iPhone, Samsung, Xiaomi..."
-                       autocomplete="off"
-                       class="w-full pl-10 border border-gray-200 p-3 rounded-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-shadow shadow-sm">
-            </div>
+         <!-- 🔍 SEARCH BAR -->
+         <form method="GET" action="/products/handphone" class="mb-6 flex gap-3" id="searchForm">
+             <div class="relative w-full">
+                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                 </div>
+                 <input type="text"
+                        id="searchInput"
+                        name="search"
+                        value="{{ request('search') }}"
+                        placeholder="Cari iPhone, Samsung, Xiaomi..."
+                        autocomplete="off"
+                        class="w-full pl-10 border border-gray-200 p-3 rounded-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-shadow shadow-sm">
+             </div>
 
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 transition-colors text-white px-6 rounded-xl font-bold shadow-sm flex-shrink-0">
-                Cari
-            </button>
-        </form>
+             <button type="submit" class="bg-blue-600 hover:bg-blue-700 transition-colors text-white px-6 rounded-xl font-bold shadow-sm flex-shrink-0">
+                 Cari
+             </button>
+         </form>
 
-        <!-- 🏷️ FILTER BRAND -->
-        <div class="flex flex-wrap gap-2 mb-8">
-            <a href="/products/handphone"
-               class="px-4 py-1.5 rounded-full text-sm font-medium transition-all shadow-sm
-               {{ !request('brand') ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200' }}">
-                Semua Brand
-            </a>
+         <!-- 🏷️ FILTER BRAND -->
+<div class="flex flex-wrap gap-2 mb-8">
+    <a href="/products/handphone"
+       class="px-4 py-1.5 rounded-full text-sm font-medium transition-all shadow-sm
+       {{ !request('brand') ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200' }}">
+        Semua Brand
+    </a>
 
-            @foreach ($brands as $brand)
-            <a href="/products/handphone?brand={{ $brand->slug }}{{ request('search') ? '&search='.request('search') : '' }}"
-               class="px-4 py-1.5 rounded-full text-sm font-medium transition-all shadow-sm
-               {{ request('brand') == $brand->slug ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200' }}">
-                {{ $brand->name }}
-            </a>
-            @endforeach
-        </div>
+    @foreach ($brands as $brand)
+        <a href="/products/handphone?brand={{ $brand->id }}"
+           class="px-4 py-1.5 rounded-full text-sm font-medium transition-all shadow-sm
+           {{ request('brand') == $brand->id ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200' }}">
+            {{ $brand->name }}
+        </a>
+    @endforeach
+</div>
+
+        
 
         <!-- ========================================== -->
         <!-- BUNGKUSAN PRODUK (PENTING UNTUK LIVE SEARCH) -->
@@ -164,4 +169,4 @@
         });
     </script>
 
-</x-app-layout>
+@endsection

@@ -13,6 +13,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\AlamatController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderController;
+
 
 // Models
 use App\Models\Brand;
@@ -177,18 +179,20 @@ Route::get('/dashboard', function () {
     Route::delete('/cart/bulk-delete', [CartController::class, 'bulkDelete']);
     
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+
 
     // ----------------------------------------------------------------------
     // HALAMAN PRODUK
-    // ----------------------------------------------------------------------
-    Route::get('/products/handphone', [ProductController::class, 'handphoneIndex']);
-    Route::get('/products/aksesoris', [ProductController::class, 'aksesorisIndex']);
-    
+    Route::get('/products/handphone', [ProductController::class, 'handphoneIndex'])->name('handphone.index');
+    Route::get('/products/aksesoris', [ProductController::class, 'aksesorisIndex'])->name('aksesoris.index');
+
     Route::get('/product/{id}', function ($id) {
         $product = Product::with('brand')->findOrFail($id);
         $brandType = $product->brand?->type ?? null;
         return view('products.detail', compact('product', 'brandType'));
-    });
+});
 
     Route::get('/test', function () {
         return Product::with('brand')->get();
@@ -246,6 +250,13 @@ Route::get('/dashboard', function () {
     Route::get('/admin/users/{id}/edit', [AdminUserController::class, 'edit']);
     Route::put('/admin/users/{id}', [AdminUserController::class, 'update']);
     Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy']);
+
+    // Proses checkout
+    Route::post('/checkout/process', [OrderController::class, 'process'])->name('checkout.process');
+
+    // Halaman sukses setelah order
+    Route::get('/order/success/{id}', [OrderController::class, 'success'])->name('order.success');
+
 });
 
 // Jika kamu menggunakan route tambahan dari Breeze (seperti Lupa Password), aktifkan baris di bawah ini:

@@ -11,10 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('brands', function (Blueprint $table) {
-            $table->dropUnique('brands_type_unique');
-            $table->index('type');
-        });
+        
     }
 
     /**
@@ -22,9 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('brands', function (Blueprint $table) {
-            $table->dropIndex(['type']);
-            $table->unique('type');
-        });
+        
     }
 };

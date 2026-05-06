@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
 
     <!-- WRAPPER UTAMA -->
     <div class="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -159,4 +161,4 @@
         });
     </script>
 
-</x-app-layout>
+@endsection

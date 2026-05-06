@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
 
     <!-- WRAPPER UTAMA (Agar tidak menabrak navbar dan responsif di HP) -->
     <div class="py-12 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -184,4 +186,4 @@
     }
     </script>
 
-</x-app-layout>
+@endsection

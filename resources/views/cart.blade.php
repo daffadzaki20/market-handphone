@@ -1,4 +1,5 @@
-<x-app-layout>
+@extends('layouts.app')
+@section('content')
     <div class="max-w-4xl mx-auto px-4 py-8 relative min-h-screen">
         <h1 class="text-3xl font-black mb-8 text-gray-800 flex items-center gap-3">
             🛒 Keranjang Belanja
@@ -245,4 +246,4 @@
         // Hitung total saat pertama kali di-load
         document.addEventListener('DOMContentLoaded', calculateTotal);
     </script>
-</x-app-layout>
+@endsection
