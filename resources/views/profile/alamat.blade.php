@@ -628,7 +628,7 @@
     form.action = `/profile/alamat/${data.id}`; 
     document.getElementById('method-field').innerHTML = '<input type="hidden" name="_method" value="PUT">';
 
-    // 2. Isi Data Kontak & Alamat Detail
+    
     document.getElementsByName('nama')[0].value = data.nama;
     document.getElementsByName('phone_number')[0].value = data.phone_number;
     document.getElementsByName('alamat_detail')[0].value = data.alamat_detail;
@@ -684,7 +684,6 @@ function openModalAlamat(isEdit = false) {
             form.action = "{{ route('alamat.store') }}";
             document.getElementById('method-field').innerHTML = '';
             form.reset();
-            
             
             ['kabupaten', 'kecamatan', 'desa'].forEach(id => {
                 document.getElementById(id).disabled = true;
