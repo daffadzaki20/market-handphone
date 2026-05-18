@@ -37,15 +37,13 @@
     </a>
 
     @foreach ($brands as $brand)
-        <a href="/products/handphone?brand={{ $brand->id }}"
-           class="px-4 py-1.5 rounded-full text-sm font-medium transition-all shadow-sm
-           {{ request('brand') == $brand->id ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200' }}">
-            {{ $brand->name }}
-        </a>
+    <a href="/products/handphone?brand={{ $brand->slug }}"
+       class="px-4 py-1.5 rounded-full text-sm font-medium transition-all shadow-sm
+       {{ request('brand') == $brand->slug ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200' }}">
+        {{ $brand->name }}
+    </a>
     @endforeach
 </div>
-
-        
 
         <!-- ========================================== -->
         <!-- BUNGKUSAN PRODUK (PENTING UNTUK LIVE SEARCH) -->

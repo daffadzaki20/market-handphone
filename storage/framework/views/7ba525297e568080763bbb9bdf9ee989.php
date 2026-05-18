@@ -1,8 +1,6 @@
-@extends('layouts.app_admin')
+<?php $__env->startSection('title', 'Dashboard Admin'); ?>
 
-@section('title', 'Dashboard Admin')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="space-y-8 animate-in fade-in duration-500">
 
     <!-- HERO SECTION -->
@@ -18,7 +16,7 @@
             </p>
 
             <h2 class="text-3xl md:text-4xl font-black mt-2 text-white italic">
-                Halo, {{ Auth::user()->name }}! 👋
+                Halo, <?php echo e(Auth::user()->name); ?>! 👋
             </h2>
 
             <p class="text-blue-100 mt-2 max-w-2xl">
@@ -32,32 +30,35 @@
 
     <!-- STATS -->
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        @php
+        <?php
             $stats = [
                 ['label' => 'Total Produk', 'value' => $totalProducts, 'icon' => '📦'],
                 ['label' => 'Total Brand', 'value' => $totalBrands, 'icon' => '🏷️'],
                 ['label' => 'Total User', 'value' => $totalUsers, 'icon' => '👥'],
                 ['label' => 'Nilai Inventori', 'value' => 'Rp ' . number_format($totalInventoryValue, 0, ',', '.'), 'icon' => '💰'],
             ];
-        @endphp
+        ?>
 
-        @foreach($stats as $stat)
+        <?php $__currentLoopData = $stats; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $stat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
         <article class="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow group">
             <div class="flex items-center justify-between">
                 <p class="text-sm font-medium text-slate-500">
-                    {{ $stat['label'] }}
+                    <?php echo e($stat['label']); ?>
+
                 </p>
 
                 <span class="text-2xl group-hover:scale-110 transition-transform">
-                    {{ $stat['icon'] }}
+                    <?php echo e($stat['icon']); ?>
+
                 </span>
             </div>
 
             <p class="text-2xl font-bold text-slate-900 mt-3">
-                {{ $stat['value'] }}
+                <?php echo e($stat['value']); ?>
+
             </p>
         </article>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </section>
 
     <!-- MAIN CONTENT -->
@@ -81,7 +82,8 @@
                         </span>
 
                         <span class="px-3 py-1 bg-white rounded-lg shadow-sm text-indigo-600 font-bold">
-                            {{ $handphoneCount }}
+                            <?php echo e($handphoneCount); ?>
+
                         </span>
                     </div>
 
@@ -91,7 +93,8 @@
                         </span>
 
                         <span class="px-3 py-1 bg-white rounded-lg shadow-sm text-indigo-600 font-bold">
-                            {{ $accessoriesCount }}
+                            <?php echo e($accessoriesCount); ?>
+
                         </span>
                     </div>
 
@@ -106,7 +109,8 @@
 
                     <div class="flex items-end justify-between">
                         <h4 class="text-4xl font-black text-red-500">
-                            {{ $lowStockProducts->count() }}
+                            <?php echo e($lowStockProducts->count()); ?>
+
                         </h4>
 
                         <span class="text-xs text-red-400 mb-1 font-medium">
@@ -117,7 +121,7 @@
                     <div class="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
                         <div
                             class="bg-red-500 h-full"
-                            style="width: {{ ($lowStockProducts->count() / max($totalProducts, 1)) * 100 }}%">
+                            style="width: <?php echo e(($lowStockProducts->count() / max($totalProducts, 1)) * 100); ?>%">
                         </div>
                     </div>
 
@@ -215,49 +219,54 @@
 
                         <tbody class="divide-y divide-slate-50">
 
-                            @forelse($latestProducts as $product)
+                            <?php $__empty_1 = true; $__currentLoopData = $latestProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
 
                             <tr class="hover:bg-slate-50/80 transition-colors">
 
                                 <td class="px-6 py-4">
                                     <p class="font-bold text-slate-800 leading-none">
-                                        {{ $product->name }}
+                                        <?php echo e($product->name); ?>
+
                                     </p>
 
                                     <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-tighter">
-                                        {{ $product->brand?->name ?? 'No Brand' }}
+                                        <?php echo e($product->brand?->name ?? 'No Brand'); ?>
+
                                     </p>
                                 </td>
 
                                 <td class="px-6 py-4">
                                     <span class="px-2 py-1 rounded-md text-[10px] font-bold uppercase
-                                        {{ ($product->brand?->type ?? '') == 'hp'
+                                        <?php echo e(($product->brand?->type ?? '') == 'hp'
                                             ? 'bg-blue-50 text-blue-600'
-                                            : 'bg-purple-50 text-purple-600' }}">
+                                            : 'bg-purple-50 text-purple-600'); ?>">
 
-                                        {{ ($product->brand?->type ?? '') == 'hp'
+                                        <?php echo e(($product->brand?->type ?? '') == 'hp'
                                             ? 'Handphone'
-                                            : 'Aksesoris' }}
+                                            : 'Aksesoris'); ?>
+
                                     </span>
                                 </td>
 
                                 <td class="px-6 py-4 font-medium text-slate-700">
-                                    Rp{{ number_format($product->price, 0, ',', '.') }}
+                                    Rp<?php echo e(number_format($product->price, 0, ',', '.')); ?>
+
                                 </td>
 
                                 <td class="px-6 py-4 text-center">
                                     <span class="inline-flex items-center justify-center w-10 h-10 rounded-full font-bold text-xs
-                                        {{ $product->stock <= 5
+                                        <?php echo e($product->stock <= 5
                                             ? 'bg-red-50 text-red-600 ring-2 ring-red-100'
-                                            : 'bg-slate-50 text-slate-600' }}">
+                                            : 'bg-slate-50 text-slate-600'); ?>">
 
-                                        {{ $product->stock }}
+                                        <?php echo e($product->stock); ?>
+
                                     </span>
                                 </td>
 
                             </tr>
 
-                            @empty
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
 
                             <tr>
                                 <td colspan="4" class="px-6 py-12 text-center">
@@ -277,7 +286,7 @@
                                 </td>
                             </tr>
 
-                            @endforelse
+                            <?php endif; ?>
 
                         </tbody>
 
@@ -287,4 +296,5 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app_admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\XampUtama\htdocs\handphone\resources\views/admin.blade.php ENDPATH**/ ?>

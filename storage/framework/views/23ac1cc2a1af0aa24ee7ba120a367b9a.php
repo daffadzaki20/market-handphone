@@ -35,16 +35,14 @@
     </a>
 
     <?php $__currentLoopData = $brands; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $brand): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-        <a href="/products/handphone?brand=<?php echo e($brand->id); ?>"
-           class="px-4 py-1.5 rounded-full text-sm font-medium transition-all shadow-sm
-           <?php echo e(request('brand') == $brand->id ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'); ?>">
-            <?php echo e($brand->name); ?>
+    <a href="/products/handphone?brand=<?php echo e($brand->slug); ?>"
+       class="px-4 py-1.5 rounded-full text-sm font-medium transition-all shadow-sm
+       <?php echo e(request('brand') == $brand->slug ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'); ?>">
+        <?php echo e($brand->name); ?>
 
-        </a>
+    </a>
     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 </div>
-
-        
 
         <!-- ========================================== -->
         <!-- BUNGKUSAN PRODUK (PENTING UNTUK LIVE SEARCH) -->

@@ -1,0 +1,102 @@
+<?php $__env->startSection('title', 'Data User Admin'); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="space-y-6">
+    <section class="card p-5 rounded-xl">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <h2 class="text-xl font-bold text-[var(--mh-text)]">Data User</h2>
+                <p class="text-sm text-[var(--mh-muted)] mt-1">Kelola akun user dari panel admin.</p>
+            </div>
+            <a href="/admin/users/create" class="inline-flex items-center justify-center px-4 py-2 rounded-lg btn-primary hover:bg-[var(--mh-primary-600)] transition">
+                + Tambah User
+            </a>
+        </div>
+
+        <?php if(session('success')): ?>
+            <div class="mt-4 rounded-lg bg-blue-50 border border-blue-200 text-[var(--mh-primary-600)] px-4 py-3 text-sm">
+                <?php echo e(session('success')); ?>
+
+            </div>
+        <?php endif; ?>
+
+        <form method="GET" action="/admin/users" class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <input
+                type="text"
+                name="search"
+                value="<?php echo e(request('search')); ?>"
+                placeholder="Cari nama, username, atau email..."
+                class="w-full border border-[var(--mh-border)] rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--mh-primary)] focus:outline-none"
+            >
+
+            <select
+                name="role"
+                class="w-full border border-[var(--mh-border)] rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--mh-primary)] focus:outline-none"
+            >
+                <option value="">Semua role</option>
+                <option value="admin" <?php echo e(request('role') === 'admin' ? 'selected' : ''); ?>>Admin</option>
+                <option value="user" <?php echo e(request('role') === 'user' ? 'selected' : ''); ?>>User</option>
+            </select>
+
+            <button class="w-full md:w-auto inline-flex items-center justify-center px-4 py-2 rounded-lg border border-[var(--mh-border)] text-[var(--mh-muted)] hover:bg-[var(--mh-surface-hover)] transition">
+                Filter
+            </button>
+        </form>
+    </section>
+
+    <section class="card p-5 rounded-xl">
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+                <thead>
+                    <tr class="text-left border-b border-[var(--mh-border)] text-[var(--mh-muted)]">
+                        <th class="py-3 pr-3">Nama</th>
+                        <th class="py-3 pr-3">Username</th>
+                        <th class="py-3 pr-3">Email</th>
+                        <th class="py-3 pr-3">Role</th>
+                        <th class="py-3 pr-3">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php $__empty_1 = true; $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <tr class="border-b border-[var(--mh-border)] last:border-b-0">
+                            <td class="py-3 pr-3 font-medium text-[var(--mh-text)]"><?php echo e($user->name); ?></td>
+                            <td class="py-3 pr-3 text-[var(--mh-muted)]"><?php echo e($user->username); ?></td>
+                            <td class="py-3 pr-3 text-[var(--mh-muted)]"><?php echo e($user->email); ?></td>
+                            <td class="py-3 pr-3">
+                                <span class="px-2 py-1 rounded-full text-xs font-semibold <?php echo e($user->role === 'admin' ? 'bg-[var(--mh-primary)] text-white' : 'bg-[var(--mh-primary-soft)] text-[var(--mh-primary)]'); ?>">
+                                    <?php echo e(strtoupper($user->role)); ?>
+
+                                </span>
+                            </td>
+                            <td class="py-3 pr-3">
+                                <div class="flex items-center gap-2">
+                                    <a href="/admin/users/<?php echo e($user->id); ?>/edit" class="px-3 py-1.5 rounded-md border border-[var(--mh-border)] text-[var(--mh-muted)] hover:bg-[var(--mh-surface-hover)]">Edit</a>
+
+                                    <form action="/admin/users/<?php echo e($user->id); ?>" method="POST" onsubmit="return confirm('Hapus user ini?')">
+                                        <?php echo csrf_field(); ?>
+                                        <?php echo method_field('DELETE'); ?>
+                                        <button type="submit" class="px-3 py-1.5 rounded-md border border-red-200 text-red-600 hover:bg-red-50">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <tr>
+                            <td colspan="5" class="py-8 text-center text-[var(--mh-muted)]">Belum ada data user.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-4">
+            <?php echo e($users->links()); ?>
+
+        </div>
+    </section>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app_admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\XampUtama\htdocs\handphone\resources\views/admin/users/index.blade.php ENDPATH**/ ?>
