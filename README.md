@@ -1,59 +1,70 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+==================================================
+PANDUAN SETUP PROJECT MARKET HANDPHONE DARI CLONE
+==================================================
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Halo tim! Setelah kalian berhasil meng-clone project ini ke laptop masing-masing, pastikan kalian sudah menginstall:
+1. XAMPP / Laragon (Pastikan Apache & MySQL menyala)
+2. Composer
+3. Node.js
 
-## About Laravel
+Jika sudah, ikuti langkah-langkah di bawah ini secara berurutan di dalam terminal VS Code kalian:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
+LANGKAH 1: Install Dependencies (Library PHP & Frontend)
+---
+Jalankan dua perintah ini untuk mengunduh semua package yang dibutuhkan project:
+1. Ketik: composer install
+   (Tunggu sampai selesai)
+2. Ketik: npm install
+   (Tunggu sampai selesai)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
+LANGKAH 2: Konfigurasi File .env
+---
+Jalankan perintah ini di terminal untuk menduplikasi file konfigurasi bawaan:
+> cp .env.example .env     (atau pakai perintah `copy .env.example .env` jika memakai CMD Windows)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Setelah itu, buka file `.env` yang baru saja dibuat di sebelah kiri (File Explorer VS Code), lalu cari bagian konfigurasi database dan pastikan nama databasenya diubah menjadi "handphone" seperti ini:
 
-## Learning Laravel
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=handphone
+DB_USERNAME=root
+DB_PASSWORD=
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
+LANGKAH 3: Generate Application Key
+---
+Jalankan perintah ini agar Laravel membuat kunci keamanan unik untuk laptop kalian:
+> php artisan key:generate
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
+LANGKAH 4: Setup Database & Isi Data Otomatis
+---
+Jalankan perintah di bawah ini untuk mereset/membuat struktur tabel dari nol beserta data dummy (seeder) yang sudah diatur:
+> php artisan migrate:fresh --seed
 
-## Laravel Sponsors
+⚠️ PENTING: Karena database belum dibuat, terminal akan memunculkan pesan peringatan seperti ini:
+"Database 'handphone' does not exist on the mysql connection. Would you like to create it? (yes/no) [no]"
+Ketik "yes" lalu tekan Enter. Laravel akan otomatis membuatkan databasenya untuk kalian.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
+LANGKAH 5: Hubungkan Folder Penyimpanan (Storage Link)
+---
+Karena project ini punya fitur upload gambar, kita harus mengaktifkan link storage-nya. Jalankan di terminal:
+> php artisan storage:link
 
-### Premium Partners
+---
+LANGKAH 6: Jalankan Project (Butuh 2 Terminal)
+---
+Karena kita memakai Vite, kita harus menyalakan server PHP dan server Frontend secara bersamaan.
+Buka 2 tab terminal di VS Code:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Di Terminal 1, jalankan:
+> php artisan serve
 
-## Contributing
+Di Terminal 2, jalankan:
+> npm run dev
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Selesai! Sekarang kalian bisa buka projectnya di browser melalui link: http://127.0.0.1:8000
