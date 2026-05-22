@@ -10,7 +10,7 @@
             <p class="text-sm text-[var(--mh-muted)] mt-1">Perbarui data akun user.</p>
         </div>
 
-        <form action="/admin/users/{{ $user->id }}" method="POST" class="space-y-5">
+        <form action="{{ route('admin.users.update', $user->id) }}" method="POST" class="space-y-5">
             @csrf
             @method('PUT')
 
@@ -21,7 +21,7 @@
 
             <div class="flex items-center gap-3 pt-2">
                 <button type="submit" class="px-4 py-2 rounded-lg btn-primary hover:bg-[var(--mh-primary-600)] transition">Update</button>
-                <a href="/admin/users" class="px-4 py-2 rounded-lg border border-[var(--mh-border)] text-[var(--mh-muted)] hover:bg-[var(--mh-surface-hover)] transition">Batal</a>
+                <a href="{{ route('admin.users.index') }}" class="px-4 py-2 rounded-lg border border-[var(--mh-border)] text-[var(--mh-muted)] hover:bg-[var(--mh-surface-hover)] transition">Batal</a>
             </div>
         </form>
     </section>

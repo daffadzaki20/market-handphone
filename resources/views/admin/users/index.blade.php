@@ -10,7 +10,7 @@
                 <h2 class="text-xl font-bold text-[var(--mh-text)]">Data User</h2>
                 <p class="text-sm text-[var(--mh-muted)] mt-1">Kelola akun user dari panel admin.</p>
             </div>
-            <a href="/admin/users/create" class="inline-flex items-center justify-center px-4 py-2 rounded-lg btn-primary hover:bg-[var(--mh-primary-600)] transition">
+            <a href="{{ route('admin.users.create') }}" class="inline-flex items-center justify-center px-4 py-2 rounded-lg btn-primary hover:bg-[var(--mh-primary-600)] transition">
                 + Tambah User
             </a>
         </div>
@@ -21,7 +21,7 @@
             </div>
         @endif
 
-        <form method="GET" action="/admin/users" class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3">
+        <form method="GET" action="{{ route('admin.users.index') }}" class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3">
             <input
                 type="text"
                 name="search"
@@ -64,15 +64,15 @@
                             <td class="py-3 pr-3 text-[var(--mh-muted)]">{{ $user->username }}</td>
                             <td class="py-3 pr-3 text-[var(--mh-muted)]">{{ $user->email }}</td>
                             <td class="py-3 pr-3">
-                                <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $user->role === 'admin' ? 'bg-[var(--mh-primary)] text-white' : 'bg-[var(--mh-primary-soft)] text-[var(--mh-primary)]' }}">
+                                <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $user->role === 'admin' ? 'bg-[var(--mh-primary)] text-blue-500' : 'bg-[var(--mh-primary-soft)] text-[var(--mh-primary)]' }}">
                                     {{ strtoupper($user->role) }}
                                 </span>
                             </td>
                             <td class="py-3 pr-3">
                                 <div class="flex items-center gap-2">
-                                    <a href="/admin/users/{{ $user->id }}/edit" class="px-3 py-1.5 rounded-md border border-[var(--mh-border)] text-[var(--mh-muted)] hover:bg-[var(--mh-surface-hover)]">Edit</a>
+                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="px-3 py-1.5 rounded-md border border-[var(--mh-border)] text-[var(--mh-muted)] hover:bg-[var(--mh-surface-hover)]">Edit</a>
 
-                                    <form action="/admin/users/{{ $user->id }}" method="POST" onsubmit="return confirm('Hapus user ini?')">
+                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Hapus user ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="px-3 py-1.5 rounded-md border border-red-200 text-red-600 hover:bg-red-50">

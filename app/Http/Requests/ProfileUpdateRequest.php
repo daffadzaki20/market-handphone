@@ -26,6 +26,11 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'phone_number' => ['nullable', 'string', 'max:15'],
+            'gender' => ['nullable', 'in:Laki-laki,Perempuan,Lainnya'],
+            'dob_day' => ['nullable', 'integer', 'between:1,31'],
+            'dob_month' => ['nullable', 'integer', 'between:1,12'],
+            'dob_year' => ['nullable', 'integer', 'digits:4'],
         ];
     }
 }

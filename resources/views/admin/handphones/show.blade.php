@@ -5,14 +5,14 @@
 @section('content')
 <div class="space-y-6">
     <div>
-        <a href="/admin/handphones" class="text-sm text-[var(--mh-muted)] hover:text-[var(--mh-text)]">&larr; Kembali ke Data Handphone</a>
+        <a href="{{ route('admin.handphones.index') }}" class="text-sm text-[var(--mh-muted)] hover:text-[var(--mh-text)]">&larr; Kembali ke Data Handphone</a>
     </div>
 
     <section class="card p-6 rounded-xl">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
                 @if($product->image)
-                    <img src="{{ asset('images/products/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-96 object-cover rounded-xl border border-[var(--mh-border)]">
+                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-96 object-cover rounded-xl border border-[var(--mh-border)]">
                 @else
                     <div class="w-full h-96 rounded-xl border border-dashed border-[var(--mh-border)] bg-[var(--mh-surface)] flex items-center justify-center text-[var(--mh-muted)]">
                         Tidak ada gambar
@@ -66,9 +66,9 @@
                 </div>
 
                 <div class="flex items-center gap-2 pt-1">
-                    <a href="/admin/handphones/{{ $product->id }}/edit" class="px-4 py-2 rounded-lg btn-primary hover:bg-[var(--mh-primary-600)] transition">Edit Produk</a>
+                    <a href="{{ route('admin.handphones.edit', $product->id) }}" class="px-4 py-2 rounded-lg btn-primary hover:bg-[var(--mh-primary-600)] transition">Edit Produk</a>
 
-                    <form action="/admin/handphones/{{ $product->id }}" method="POST" onsubmit="return confirm('Hapus produk ini?')">
+                    <form action="{{ route('admin.handphones.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Hapus produk ini?')">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="px-4 py-2 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition">

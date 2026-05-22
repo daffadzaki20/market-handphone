@@ -46,19 +46,19 @@ class OrderController extends Controller
     public function success($id)
     {
         $order = Order::with('items.product')->findOrFail($id);
-        return view('order_success', compact('order'));
+        return view('user.order_success', compact('order'));
     }
 
     // Daftar semua pesanan milik user login
     public function index()
     {
         $orders = auth()->user()->orders()->latest()->get();
-        return view('orders.index', compact('orders'));
+        return view('user.orders.index', compact('orders'));
     }
 
     // Detail satu pesanan
     public function show(Order $order)
     {
-        return view('orders.show', compact('order'));
+        return view('user.orders.show', compact('order'));
     }
 }

@@ -15,7 +15,7 @@ class CheckoutController extends Controller
         $cartIds = $request->query('cart_ids');
 
         if (!$cartIds) {
-            return redirect('/cart')->with('error', 'Pilih produk terlebih dahulu.');
+            return redirect()->route('cart.index')->with('error', 'Pilih produk terlebih dahulu.');
         }
 
         // 2. Ambil produk yang dipilih untuk checkout
@@ -61,7 +61,7 @@ class CheckoutController extends Controller
             ->get();
 
         // 6. Kirim semua variabel ke View
-        return view('checkout', compact(
+        return view('user.checkout', compact(
             'alamatUtama', 
             'checkoutItems', 
             'totalHarga', 

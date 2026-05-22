@@ -15,7 +15,7 @@ class AlamatController extends Controller
             ->latest()
             ->get();
 
-        return view('profile.alamat', compact('alamats'));
+        return view('user.profile.alamat', compact('alamats'));
     }
 
     public function store(Request $request) {
@@ -30,8 +30,8 @@ class AlamatController extends Controller
             'rw' => 'nullable',
             'kode_pos' => 'required',
             'alamat_detail' => 'required',
-            'latitude' => 'required',
-            'longitude' => 'required',
+            'latitude' => 'nullable',
+            'longitude' => 'nullable',
             'label' => 'nullable',
         ]);
 
@@ -39,6 +39,12 @@ class AlamatController extends Controller
         
         $isFirst = Alamat::where('user_id', Auth::id())->count() === 0;
         $data['is_utama'] = $isFirst;
+
+        // Jika koordinat tidak diisi (mis. user menolak geolocation), set ke 0.0 agar sesuai skema DB
+        if (empty($data['latitude']) || empty($data['longitude'])) {
+            $data['latitude'] = 0.0;
+            $data['longitude'] = 0.0;
+        }
 
         Alamat::create($data);
 
@@ -58,12 +64,17 @@ class AlamatController extends Controller
             'rw' => 'nullable',
             'kode_pos' => 'required',
             'alamat_detail' => 'required',
-            'latitude' => 'required',
-            'longitude' => 'required',
+            'latitude' => 'nullable',
+            'longitude' => 'nullable',
             'label' => 'nullable',
         ]);
 
         $alamat = Alamat::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        if (empty($data['latitude']) || empty($data['longitude'])) {
+            $data['latitude'] = 0.0;
+            $data['longitude'] = 0.0;
+        }
+
         $alamat->update($data);
 
         return redirect()->route('alamat.index')->with('success', 'Alamat berhasil diperbarui!');

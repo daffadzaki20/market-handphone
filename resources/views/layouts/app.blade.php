@@ -35,19 +35,19 @@
             <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
 
                 <!-- BRAND -->
-                <a href="/dashboard" class="text-xl font-black text-blue-600 tracking-tight hover:scale-105 transition-transform">
+                <a href="{{ route('dashboard') }}" class="text-xl font-black text-blue-600 tracking-tight hover:scale-105 transition-transform">
                     📱 MyPhoneStore
                 </a>
 
                 <!-- MENU (DESKTOP) -->
                 <div class="hidden md:flex space-x-8 text-sm font-bold">
-                    <a href="/dashboard" class="pb-1 transition-colors duration-200 {{ request()->is('dashboard') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
+                    <a href="{{ route('dashboard') }}" class="pb-1 transition-colors duration-200 {{ request()->is('dashboard') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
                         Home
                     </a>
-                    <a href="/products/handphone" class="pb-1 transition-colors duration-200 {{ request()->is('products/handphone') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
+                    <a href="{{ route('handphone.index') }}" class="pb-1 transition-colors duration-200 {{ request()->is('products/handphone') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
                         Handphone
                     </a>
-                    <a href="/products/aksesoris" class="pb-1 transition-colors duration-200 {{ request()->is('products/aksesoris') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
+                    <a href="{{ route('aksesoris.index') }}" class="pb-1 transition-colors duration-200 {{ request()->is('products/aksesoris') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
                         Aksesoris
                     </a>
                     <a href="{{ route('orders.index') }}" class="pb-1 transition-colors duration-200 {{ request()->is('orders') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
@@ -59,7 +59,7 @@
                 <div class="flex items-center gap-5">
                     <!-- NOTIFIKASI -->
                     @auth
-                    <a href="/profile/notifikasi" class="relative text-gray-400 hover:text-orange-500 transition-colors">
+                    <a href="{{ route('profile.notifications') }}" class="relative text-gray-400 hover:text-orange-500 transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                         </svg>
@@ -70,7 +70,7 @@
                     @endauth
                     
                     <!-- KERANJANG -->
-                    <a href="/cart" id="cart-icon" class="relative text-gray-400 hover:text-orange-500 transition-colors">
+                    <a href="{{ route('cart.index') }}" id="cart-icon" class="relative text-gray-400 hover:text-orange-500 transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
@@ -83,7 +83,7 @@
                     <div class="h-6 w-[2px] bg-gray-200 mx-1"></div>
 
                     <!-- PROFILE -->
-                    <a href="{{ Auth::check() ? '/profile' : '/login' }}" class="flex items-center gap-2 hover:bg-gray-50 px-2 py-1.5 rounded-full transition-colors group">
+                    <a href="{{ Auth::check() ? route('profile') : route('login') }}" class="flex items-center gap-2 hover:bg-gray-50 px-2 py-1.5 rounded-full transition-colors group">
                         @auth
                             @if(Auth::user()->profile_photo)
                                 <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" class="w-8 h-8 rounded-full border border-gray-200 shadow-sm object-cover group-hover:border-blue-500 transition-colors">

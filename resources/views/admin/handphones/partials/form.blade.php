@@ -133,7 +133,7 @@
         @if($product?->image)
                 <div class="mt-3">
                 <p class="text-xs text-[var(--mh-muted)] mb-2">Gambar saat ini:</p>
-                <img src="{{ asset('images/products/' . $product->image) }}" alt="{{ $product->name }}" class="w-24 h-24 object-cover rounded-lg border border-[var(--mh-border)]">
+                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-24 h-24 object-cover rounded-lg border border-[var(--mh-border)]">
             </div>
         @endif
     </div>

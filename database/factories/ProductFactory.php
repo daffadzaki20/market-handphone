@@ -40,11 +40,22 @@ class ProductFactory extends Factory
             'name' => $name,
             'price' => $this->faker->numberBetween(50000, 15000000),
             'stock' => $this->faker->numberBetween(0, 100),
-            'image' => 'products/default.jpg',
+            'image' => $this->faker->randomElement($this->defaultImages()),
             'description' => $this->faker->paragraph(),
             'ram' => $isHp ? $this->faker->randomElement(['4GB', '8GB', '12GB', '16GB']) : null,
             'storage' => $isHp ? $this->faker->randomElement(['64GB', '128GB', '256GB', '512GB']) : null,
             'battery' => $isHp ? $this->faker->randomElement(['4000mAh', '4500mAh', '5000mAh']) : null,
+        ];
+    }
+
+    private function defaultImages(): array
+    {
+        return [
+            'images/products/infinix30.jpg',
+            'images/products/iphone15.jpg',
+            'images/products/reno12.jpg',
+            'images/products/s24.jpg',
+            'images/products/vivov30.jpg',
         ];
     }
 

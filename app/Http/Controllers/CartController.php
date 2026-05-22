@@ -23,8 +23,8 @@ class CartController extends Controller
             return ($item->product->price ?? 0) * $item->quantity;
         });
 
-        // Pastikan mengarah ke view 'cart' karena kamu ingin menggunakan resources/views/cart.blade.php
-        return view('cart', compact('cartItems', 'totalPrice')); 
+        // Pastikan mengarah ke view 'cart' karena file sekarang berada di resources/views/user/cart.blade.php
+        return view('user.cart', compact('cartItems', 'totalPrice'));
     }
 
     public function store(Request $request, $id)
@@ -106,7 +106,7 @@ class CartController extends Controller
     {
         // Pastikan ada barang yang dipilih
         if (!$request->cart_ids || !is_array($request->cart_ids)) {
-            return redirect('/cart')->with('error', 'Pilih minimal satu produk untuk di-checkout.');
+            return redirect()->route('cart.index')->with('error', 'Pilih minimal satu produk untuk di-checkout.');
         }
 
         // Ambil data keranjang beserta produknya berdasarkan ID yang diceklis (Khusus milik user yang login)
@@ -130,6 +130,6 @@ class CartController extends Controller
         $biayaLayanan = 2500;
         $grandTotal = $totalHarga + $ongkosKirim + $biayaLayanan;
 
-        return view('checkout', compact('checkoutItems', 'totalHarga', 'ongkosKirim', 'biayaLayanan', 'grandTotal'));
+        return view('user.checkout', compact('checkoutItems', 'totalHarga', 'ongkosKirim', 'biayaLayanan', 'grandTotal'));
     }
 }

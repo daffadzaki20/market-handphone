@@ -44,7 +44,7 @@
         <nav class="flex-1 p-5 space-y-3 bg-white">
 
             {{-- DASHBOARD --}}
-            <a href="/admin"
+            <a href="{{ route('admin.dashboard') }}"
                class="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300
                {{ request()->is('admin')
                     ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white shadow-lg scale-[1.02]'
@@ -57,7 +57,7 @@
             </a>
 
             {{-- HANDPHONE --}}
-            <a href="/admin/handphones"
+            <a href="{{ route('admin.handphones.index') }}"
                class="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300
                {{ request()->is('admin/handphones*')
                     ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white shadow-lg scale-[1.02]'
@@ -70,7 +70,7 @@
             </a>
 
             {{-- AKSESORIS --}}
-            <a href="/admin/aksesoris"
+            <a href="{{ route('admin.aksesoris.index') }}"
                class="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300
                {{ request()->is('admin/aksesoris*')
                     ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white shadow-lg scale-[1.02]'
@@ -83,7 +83,7 @@
             </a>
 
             {{-- USERS --}}
-            <a href="/admin/users"
+            <a href="{{ route('admin.users.index') }}"
                class="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300
                {{ request()->is('admin/users*')
                     ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white shadow-lg scale-[1.02]'
@@ -120,7 +120,7 @@
 
                 </div>
 
-                <form method="POST" action="/logout">
+                <form method="POST" action="{{ route('logout') }}">
                     @csrf
 
                     <button type="submit"

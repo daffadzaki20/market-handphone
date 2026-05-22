@@ -1,0 +1,164 @@
+<?php $__env->startSection('content'); ?>
+
+<!-- Wrapper Utama -->
+<div class="max-w-6xl mx-auto px-4 py-6 md:py-8 flex flex-col md:flex-row gap-4 md:gap-3">
+
+    <!-- ========================================== -->
+    <!-- SIDEBAR KIRI -->
+    <!-- ========================================== -->
+    <div class="w-full md:w-48 flex-shrink-0">
+        
+        <!-- User Mini Profile -->
+        <div class="flex items-center gap-3 mb-6 pb-6 border-b border-gray-200">
+            <?php if(Auth::user()->profile_photo): ?>
+                <img src="<?php echo e(asset('storage/' . Auth::user()->profile_photo)); ?>" alt="Avatar" class="w-12 h-12 rounded-full object-cover border border-gray-200">
+            <?php else: ?>
+                <div class="w-12 h-12 bg-slate-500 text-white rounded-full flex items-center justify-center text-xl font-semibold">
+                    <?php echo e(strtoupper(substr(Auth::user()->username, 0, 1))); ?>
+
+                </div>
+            <?php endif; ?>
+            
+            <div class="overflow-hidden">
+                <div class="font-bold text-gray-800 truncate"><?php echo e(Auth::user()->username); ?></div>
+                <a href="<?php echo e(route('profile')); ?>" class="text-sm text-gray-500 flex items-center gap-1 mt-0.5 hover:text-orange-500 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                    Ubah Profil
+                </a>
+            </div>
+        </div>
+
+        <!-- Menu Navigasi Sidebar -->
+        <nav class="space-y-5 text-sm">
+            <!-- Menu: Akun Saya -->
+            <div>
+                <div class="flex items-center gap-2 font-semibold text-gray-800 mb-2 cursor-pointer hover:text-orange-500 transition-colors">
+                    <span class="text-blue-500">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    </span>
+                    Akun Saya
+                </div>
+                
+                <div class="pl-7 space-y-3 mt-2">
+                    <a href="<?php echo e(route('profile')); ?>" class="block text-gray-600 hover:text-orange-500 transition-colors">Profil</a>
+                    <a href="<?php echo e(route('profile.bank')); ?>" class="block text-gray-600 hover:text-orange-500 transition-colors">Bank & Kartu</a>
+                    <a href="<?php echo e(route('alamat.index')); ?>" class="block text-gray-600 hover:text-orange-500 transition-colors">Alamat</a>
+                    <a href="<?php echo e(route('profile.password')); ?>" class="block text-gray-600 hover:text-orange-500 transition-colors">Ubah Password</a>
+                </div>
+            </div>
+
+            <!-- Menu Lainnya -->
+            <a href="<?php echo e(route('profile.orders')); ?>" class="flex items-center gap-2 font-semibold text-gray-700 hover:text-orange-500 transition-colors">
+                <span class="text-blue-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                </span>
+                Pesanan Saya
+            </a>
+            
+            <a href="<?php echo e(route('profile.notifications')); ?>" class="flex items-center gap-2 font-semibold text-gray-700 hover:text-orange-500 transition-colors">
+                <span class="text-red-500">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                </span>
+                Notifikasi
+            </a>
+
+            <!-- 👇 Menu Voucher SEKARANG AKTIF (Oranye) 👇 -->
+            <a href="<?php echo e(route('profile.voucher')); ?>" class="flex items-center gap-2 font-semibold text-orange-500 transition-colors">
+                <span class="text-orange-500">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
+                </span>
+                Voucher Saya
+            </a>
+        </nav>
+
+        <!-- Garis Pembatas -->
+            <div class="border-t border-gray-100 my-4"></div>
+
+            <!-- Menu Logout di Sidebar -->
+            <form method="POST" action="<?php echo e(route('logout')); ?>" class="flex items-center gap-2 font-semibold text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
+                <?php echo csrf_field(); ?>
+                <button type="submit" class="flex items-center gap-2 w-full text-left">
+                    <span class="text-red-500">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                        </svg>
+                    </span>
+                    Logout
+                </button>
+            </form>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- KONTEN UTAMA KANAN (VOUCHER SAYA) -->
+    <!-- ========================================== -->
+    <div class="flex-1 bg-white shadow-sm border border-gray-100 rounded-md p-5 md:p-8">  
+        
+        <!-- Header -->
+        <div class="border-b border-gray-200 pb-4 mb-6">
+            <h1 class="text-xl font-medium text-gray-800">Voucher Saya</h1>
+            <p class="text-sm text-gray-500 mt-1">Kumpulkan dan gunakan voucher untuk belanja lebih hemat.</p>
+        </div>
+
+        <!-- Form Tambah Voucher -->
+        <div class="bg-gray-50 p-4 rounded-md border border-gray-100 mb-8 flex flex-col sm:flex-row gap-3">
+            <input type="text" placeholder="Masukkan kode voucher di sini..." class="flex-1 border border-gray-300 rounded-sm px-4 py-2.5 text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none uppercase transition-colors">
+            <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-sm text-sm font-medium transition-colors shadow-sm">
+                Klaim Voucher
+            </button>
+        </div>
+
+        <!-- Daftar Voucher (Grid Layout) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            
+            <!-- TIKET VOUCHER 1 (Cashback) -->
+            <div class="flex border border-gray-200 rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow relative bg-white">
+                <!-- Bagian Kiri (Warna Brand) -->
+                <div class="w-28 bg-orange-500 flex flex-col justify-center items-center p-3 border-r-2 border-dashed border-white relative z-10">
+                    <span class="text-white text-xs font-bold text-center leading-tight tracking-wider">CASHBACK<br>10%</span>
+                    <!-- Efek potongan tiket atas bawah -->
+                    <div class="absolute -top-3 -right-3 w-6 h-6 bg-white rounded-full"></div>
+                    <div class="absolute -bottom-3 -right-3 w-6 h-6 bg-white rounded-full"></div>
+                </div>
+                <!-- Bagian Kanan (Detail) -->
+                <div class="flex-1 p-4 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-800">Cashback s/d Rp 150.000</h3>
+                        <p class="text-xs text-gray-500 mt-1 leading-relaxed">Berlaku untuk pembelian Handphone Samsung. Min. belanja Rp 3.000.000.</p>
+                    </div>
+                    <div class="flex justify-between items-end mt-3">
+                        <span class="text-xs font-medium text-red-500">Berakhir 12 Jam lagi</span>
+                        <a href="#" class="text-xs text-blue-500 hover:text-blue-600 font-medium">S&K</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TIKET VOUCHER 2 (Gratis Ongkir) -->
+            <div class="flex border border-gray-200 rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow relative bg-white">
+                <!-- Bagian Kiri (Warna Biru / Warna Lain) -->
+                <div class="w-28 bg-blue-500 flex flex-col justify-center items-center p-3 border-r-2 border-dashed border-white relative z-10">
+                    <span class="text-white text-xs font-bold text-center leading-tight tracking-wider">GRATIS<br>ONGKIR</span>
+                    <div class="absolute -top-3 -right-3 w-6 h-6 bg-white rounded-full"></div>
+                    <div class="absolute -bottom-3 -right-3 w-6 h-6 bg-white rounded-full"></div>
+                </div>
+                <!-- Bagian Kanan (Detail) -->
+                <div class="flex-1 p-4 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-800">Gratis Ongkir s/d Rp 40.000</h3>
+                        <p class="text-xs text-gray-500 mt-1 leading-relaxed">Berlaku untuk semua metode pengiriman (Reguler/Kargo). Min. belanja Rp 50.000.</p>
+                    </div>
+                    <div class="flex justify-between items-end mt-3">
+                        <span class="text-xs font-medium text-gray-500">Berlaku s/d 30 Apr 2026</span>
+                        <a href="#" class="text-xs text-blue-500 hover:text-blue-600 font-medium">S&K</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\S6\PengemWeb\market-handphone\resources\views/user/profile/voucher.blade.php ENDPATH**/ ?>

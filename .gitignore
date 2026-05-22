@@ -18,7 +18,12 @@
 /public/storage
 /storage/*.key
 /storage/pail
+/storage/app/public
 /vendor
+venv/
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Keep runtime uploaded files out of Git.
+# Default sample product images are stored under public/images/products.

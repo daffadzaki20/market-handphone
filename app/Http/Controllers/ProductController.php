@@ -39,7 +39,7 @@ class ProductController extends Controller
         ->orderBy('name', 'asc')
         ->get();
 
-    return view('products.handphone', compact('products', 'brands'));
+    return view('user.products.handphone', compact('products', 'brands'));
 }
 
     public function aksesorisIndex()
@@ -68,8 +68,17 @@ class ProductController extends Controller
             ->orderBy('name', 'asc')
             ->get();
 
-        return view('products.aksesoris', compact('products', 'brands'));
+        return view('user.products.aksesoris', compact('products', 'brands'));
     }
+
+    public function show(int $id)
+    {
+        $product = Product::with('brand')->findOrFail($id);
+        $brandType = $product->brand?->type ?? null;
+
+        return view('user.products.detail', compact('product', 'brandType'));
+    }
+
     private function ensureAdmin()
     {
         if (!Auth::check() || Auth::user()->role !== 'admin') {
@@ -194,7 +203,7 @@ class ProductController extends Controller
 
         $imageName = $product->image;
         if ($request->hasFile('image')) {
-            $imageName = $request->file('image')->store('images/products', 'public');
+            $imageName = $request->file('image')->store('products', 'public');
         }
 
         // Pastikan brand yang dipilih memang tipe 'hp'
@@ -278,7 +287,7 @@ class ProductController extends Controller
 
         $imageName = null;
         if ($request->hasFile('image')) {
-            $imageName = $request->file('image')->store('images/products', 'public');
+            $imageName = $request->file('image')->store('products', 'public');
         }
 
         // Pastikan brand yang dipilih memang tipe 'aksesoris'
@@ -344,7 +353,7 @@ class ProductController extends Controller
 
         $imageName = $product->image;
         if ($request->hasFile('image')) {
-            $imageName = $request->file('image')->store('images/products', 'public');
+            $imageName = $request->file('image')->store('products', 'public');
         }
 
         // Pastikan brand yang dipilih memang tipe 'aksesoris'
