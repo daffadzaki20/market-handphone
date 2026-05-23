@@ -45,6 +45,34 @@
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 
+    <div class="mt-2 border-t border-gray-100 pt-6">
+    <?php if($order->status == 'diproses'): ?>
+        <div class="bg-red-50 p-4 rounded-2xl border border-red-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <h4 class="font-bold text-red-800 text-sm">Ingin membatalkan pesanan?</h4>
+                <p class="text-xs text-red-600 mt-0.5">Pembatalan hanya bisa dilakukan selama pesanan belum dikirim oleh admin.</p>
+            </div>
+            
+            
+            <form action="<?php echo e(route('user.orders.cancel', $order->id)); ?>" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('PUT'); ?>
+                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-5 rounded-xl shadow-md transition-all active:scale-95 text-xs uppercase tracking-wider">
+                    Batalkan Pesanan
+                </button>
+            </form>
+        </div>
+    <?php elseif($order->status == 'dibatalkan'): ?>
+        <div class="bg-gray-100 p-4 rounded-2xl border border-gray-200 text-center text-sm text-gray-500 italic font-medium">
+            ❌ Pesanan ini telah dibatalkan.
+        </div>
+    <?php else: ?>
+        <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100 text-center text-sm text-blue-600 font-medium">
+            🚚 Pesanan sedang dikirim/selesai. Tombol pembatalan sudah dikunci.
+        </div>
+    <?php endif; ?>
+</div>
+
     <!-- Tombol kembali -->
     <div class="mt-8">
         <a href="<?php echo e(route('orders.index')); ?>" 
@@ -53,6 +81,7 @@
         </a>
     </div>
 </div>
+
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\S6\PengemWeb\market-handphone\resources\views/user/orders/show.blade.php ENDPATH**/ ?>

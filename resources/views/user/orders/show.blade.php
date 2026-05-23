@@ -43,6 +43,34 @@
         @endforeach
     </div>
 
+    <div class="mt-2 border-t border-gray-100 pt-6">
+    @if($order->status == 'diproses')
+        <div class="bg-red-50 p-4 rounded-2xl border border-red-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <h4 class="font-bold text-red-800 text-sm">Ingin membatalkan pesanan?</h4>
+                <p class="text-xs text-red-600 mt-0.5">Pembatalan hanya bisa dilakukan selama pesanan belum dikirim oleh admin.</p>
+            </div>
+            
+            {{-- Form pembatalan baru yang kita buat --}}
+            <form action="{{ route('user.orders.cancel', $order->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')">
+                @csrf
+                @method('PUT')
+                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-5 rounded-xl shadow-md transition-all active:scale-95 text-xs uppercase tracking-wider">
+                    Batalkan Pesanan
+                </button>
+            </form>
+        </div>
+    @elseif($order->status == 'dibatalkan')
+        <div class="bg-gray-100 p-4 rounded-2xl border border-gray-200 text-center text-sm text-gray-500 italic font-medium">
+            ❌ Pesanan ini telah dibatalkan.
+        </div>
+    @else
+        <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100 text-center text-sm text-blue-600 font-medium">
+            🚚 Pesanan sedang dikirim/selesai. Tombol pembatalan sudah dikunci.
+        </div>
+    @endif
+</div>
+
     <!-- Tombol kembali -->
     <div class="mt-8">
         <a href="{{ route('orders.index') }}" 
@@ -51,4 +79,5 @@
         </a>
     </div>
 </div>
+
 @endsection

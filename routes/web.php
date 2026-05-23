@@ -103,4 +103,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
 
     Route::get('/order/success/{id}', [OrderController::class, 'success'])->name('order.success');
-});
+    Route::get('/admin/orders/pdf', [DashboardController::class, 'exportPdf'])->name('admin.laporan.pdf');
+    Route::get('/admin/orders', [OrderController::class, 'adminIndex'])->name('admin.orders.index');
+    Route::get('/admin/orders/{id}/detail', [OrderController::class, 'adminShow'])->name('admin.orders.show');
+    Route::put('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    Route::put('/admin/orders/{id}/cancel', [OrderController::class, 'adminCancel'])->name('admin.orders.cancel');
+    
+    Route::put('/orders/{id}/cancel', [OrderController::class, 'userCancel'])->name('user.orders.cancel');
+
+    });

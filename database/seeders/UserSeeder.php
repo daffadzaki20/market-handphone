@@ -25,13 +25,13 @@ class UserSeeder extends Seeder
             ]
         );
 
-        // Data User Ardian
+        // Data User User
         User::updateOrCreate(
-            ['email' => 'ardian@example.com'],
+            ['email' => 'user@example.com'],
             [
-                'name' => 'Ardian',
-                'username' => 'ardian',
-                'password' => Hash::make('password'),
+                'name' => 'User',
+                'username' => 'user',
+                'password' => Hash::make('user123'),
                 'role' => 'user',
                 'phone_number' => '081234567890',
             ]

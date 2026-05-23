@@ -163,7 +163,7 @@
         </div> <!-- Tutup Pembungkus Utama (max-w-7xl) -->
     </div> <!-- Tutup div py-8 -->
 
-    <!-- FLOATING WISHLIST (Di luar pembungkus utama agar tetap melayang) -->
+    {{-- <!-- FLOATING WISHLIST (Di luar pembungkus utama agar tetap melayang) -->
     <div id="wishlist-toggle" class="fixed right-0 top-1/2 -translate-y-1/2 z-[9999] flex items-center group">
         <div class="bg-white/80 backdrop-blur-lg border border-white/50 shadow-2xl rounded-l-3xl p-4 cursor-pointer hover:bg-white transition-all">
             <div class="relative">
@@ -183,7 +183,7 @@
                 </a>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <style>
         /* KEYFRAME ANIMATIONS */

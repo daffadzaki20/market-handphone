@@ -13,14 +13,6 @@
     <!-- CSS Tambahan -->
     <style>
         .cloak-icon { width: 32px !important; height: 32px !important; color: #6b7280; }
-        
-        /* Efek Sembunyi Wishlist (Diubah classnya agar tidak bentrok dengan class group di Tailwind) */
-        .wishlist-group {
-            transform: translateX(calc(100% - 45px));
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .wishlist-group:hover {
-            transform: translateX(0);
         }
     </style>
 </head>
@@ -31,15 +23,13 @@
         <!-- ========================================== -->
         <!-- NAVBAR CUSTOM MYPHONESTORE -->
         <!-- ========================================== -->
-        <nav class="bg-white shadow-md relative z-[50]">
+        <nav x-data="{ mobileMenuOpen: false }" class="bg-white shadow-md relative z-[50]">
             <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
 
-                <!-- BRAND -->
                 <a href="<?php echo e(route('dashboard')); ?>" class="text-xl font-black text-blue-600 tracking-tight hover:scale-105 transition-transform">
                     📱 MyPhoneStore
                 </a>
 
-                <!-- MENU (DESKTOP) -->
                 <div class="hidden md:flex space-x-8 text-sm font-bold">
                     <a href="<?php echo e(route('dashboard')); ?>" class="pb-1 transition-colors duration-200 <?php echo e(request()->is('dashboard') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500'); ?>">
                         Home
@@ -53,11 +43,9 @@
                     <a href="<?php echo e(route('orders.index')); ?>" class="pb-1 transition-colors duration-200 <?php echo e(request()->is('orders') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500'); ?>">
                         Pesanan Saya
                     </a>
-
                 </div>
 
-                <div class="flex items-center gap-5">
-                    <!-- NOTIFIKASI -->
+                <div class="flex items-center gap-4 sm:gap-5">
                     <?php if(auth()->guard()->check()): ?>
                     <a href="<?php echo e(route('profile.notifications')); ?>" class="relative text-gray-400 hover:text-orange-500 transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,7 +57,6 @@
                     </a>
                     <?php endif; ?>
                     
-                    <!-- KERANJANG -->
                     <a href="<?php echo e(route('cart.index')); ?>" id="cart-icon" class="relative text-gray-400 hover:text-orange-500 transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
@@ -80,10 +67,8 @@
                         </span>
                     </a>
 
-                    <!-- Garis Pembatas -->
-                    <div class="h-6 w-[2px] bg-gray-200 mx-1"></div>
+                    <div class="hidden sm:block h-6 w-[2px] bg-gray-200 mx-1"></div>
 
-                    <!-- PROFILE -->
                     <a href="<?php echo e(Auth::check() ? route('profile') : route('login')); ?>" class="flex items-center gap-2 hover:bg-gray-50 px-2 py-1.5 rounded-full transition-colors group">
                         <?php if(auth()->guard()->check()): ?>
                             <?php if(Auth::user()->profile_photo): ?>
@@ -94,7 +79,7 @@
 
                                 </div>
                             <?php endif; ?>
-                            <span class="font-bold text-sm text-gray-700 hidden sm:block group-hover:text-blue-600 transition-colors">
+                            <span class="font-bold text-sm text-gray-700 hidden lg:block group-hover:text-blue-600 transition-colors">
                                 <?php echo e(Auth::user()->username ?? Auth::user()->name); ?>
 
                             </span>
@@ -104,8 +89,42 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                 </svg>
                             </div>
-                            <span class="font-bold text-sm text-gray-700 hidden sm:block group-hover:text-blue-600 transition-colors">Login</span>
+                            <span class="font-bold text-sm text-gray-700 hidden lg:block group-hover:text-blue-600 transition-colors">Login</span>
                         <?php endif; ?>
+                    </a>
+
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-blue-600 hover:bg-gray-100 focus:outline-none transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="!mobileMenuOpen">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="mobileMenuOpen" style="display: none;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div x-show="mobileMenuOpen" 
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 -translate-y-2"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 -translate-y-2"
+                 class="md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 shadow-xl"
+                 style="display: none;">
+                <div class="px-4 pt-2 pb-4 space-y-1">
+                    <a href="<?php echo e(route('dashboard')); ?>" class="block px-4 py-3 rounded-xl font-bold <?php echo e(request()->is('dashboard') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'); ?>">
+                        🏠 Home
+                    </a>
+                    <a href="<?php echo e(route('handphone.index')); ?>" class="block px-4 py-3 rounded-xl font-bold <?php echo e(request()->is('products/handphone') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'); ?>">
+                        📱 Handphone
+                    </a>
+                    <a href="<?php echo e(route('aksesoris.index')); ?>" class="block px-4 py-3 rounded-xl font-bold <?php echo e(request()->is('products/aksesoris') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'); ?>">
+                        🎧 Aksesoris
+                    </a>
+                    <a href="<?php echo e(route('orders.index')); ?>" class="block px-4 py-3 rounded-xl font-bold <?php echo e(request()->is('orders') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'); ?>">
+                        📦 Pesanan Saya
                     </a>
                 </div>
             </div>
@@ -135,28 +154,32 @@
     <!-- ========================================== -->
     <!-- FLOATING WISHLIST SIDEBAR -->
     <!-- ========================================== -->
-    <div class="fixed right-0 top-1/2 -translate-y-1/2 z-[9999] flex items-center wishlist-group">
-        <!-- Bagian Tombol -->
-        <div class="bg-white border-y border-l border-gray-200 shadow-[-4px_0_10px_rgba(0,0,0,0.05)] rounded-l-2xl p-3 cursor-pointer transition-all duration-300 transform translate-x-1 hover:translate-x-0 group">
+    <div x-data="{ wishlistOpen: false }" 
+         @click.outside="wishlistOpen = false"
+         @mouseenter="if(window.innerWidth >= 768) wishlistOpen = true"
+         @mouseleave="if(window.innerWidth >= 768) wishlistOpen = false"
+         id="wishlist-toggle" 
+         class="fixed right-0 top-1/2 -translate-y-1/2 z-[9999] flex items-center transition-transform duration-500 ease-in-out"
+         :class="wishlistOpen ? 'translate-x-0' : 'translate-x-[calc(100%-64px)]'">
+         
+        <div @click="if(window.innerWidth < 768) wishlistOpen = !wishlistOpen" 
+             class="bg-white/80 backdrop-blur-lg border border-white/50 shadow-2xl rounded-l-3xl p-4 cursor-pointer hover:bg-white transition-all">
             <div class="relative">
-                <svg class="w-7 h-7 text-red-500 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                <svg class="w-8 h-8 text-red-500 fill-current animate-pulse" viewBox="0 0 24 24">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
-                <span class="absolute -top-2 -right-2 bg-gray-800 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">
-                    0
-                </span>
+                <span class="absolute -top-3 -right-3 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full border-2 border-white shadow-sm">0</span>
             </div>
         </div>
-
-        <!-- Panel Detail -->
-        <div class="max-w-0 overflow-hidden wishlist-group-hover:max-w-xs transition-all duration-500 ease-in-out" style="transition: max-width 0.5s ease;">
-            <div class="bg-white border border-gray-200 shadow-xl rounded-l-xl p-4 w-64 mr-[-1px]">
-                <h3 class="font-bold text-gray-800 text-sm mb-2 flex items-center gap-2">
-                    ❤️ Wishlist Saya
-                </h3>
-                <p class="text-xs text-gray-500 mb-3 italic">Produk yang Anda sukai akan muncul di sini.</p>
-                <a href="/wishlist" class="block text-center bg-red-50 text-red-600 py-2 rounded-lg text-xs font-bold hover:bg-red-100 transition-colors border border-red-100">
-                    Lihat Semua Wishlist
+        
+        <div class="overflow-hidden transition-all duration-500 ease-in-out"
+             :class="wishlistOpen ? 'max-w-xs opacity-100 visible' : 'max-w-0 opacity-0 invisible'">
+            <div class="bg-white/90 backdrop-blur-xl border border-white shadow-2xl rounded-l-2xl p-6 w-72">
+                <h3 class="font-black text-gray-800 text-base mb-2">❤️ My Favorites</h3>
+                <p class="text-xs text-gray-500 mb-4 italic leading-relaxed">Produk impianmu tersimpan aman di sini.</p>
+                
+                <a href="#" @click.prevent="alert('Fitur Wishlist sedang dalam tahap pengembangan. Ditunggu update selanjutnya ya!')" class="block text-center bg-gray-100 text-gray-500 py-3 rounded-xl text-xs font-black shadow-sm hover:scale-105 transition-all uppercase tracking-widest border border-gray-200 cursor-not-allowed">
+                    Fitur Segera Hadir
                 </a>
             </div>
         </div>

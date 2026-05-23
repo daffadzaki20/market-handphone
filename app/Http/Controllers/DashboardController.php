@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(): View|RedirectResponse
     {
         $user = Auth::user();
 
@@ -55,5 +58,16 @@ class DashboardController extends Controller
             'lowStockProducts',
             'latestProducts'
         ));
+    }
+    public function exportPdf()
+    {
+        $orders = Order::with('user')->orderBy('created_at', 'desc')->get();
+
+        $pdf = Pdf::loadView('admin.laporan.pdf_view', compact('orders'));
+        
+        $pdf->setPaper('A4', 'landscape');
+
+        return $pdf->download('Laporan-Penjualan-MyPhoneStore.pdf');
+        
     }
 }

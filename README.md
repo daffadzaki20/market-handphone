@@ -68,3 +68,14 @@ Di Terminal 2, jalankan:
 > npm run dev
 
 Selesai! Sekarang kalian bisa buka projectnya di browser melalui link: http://127.0.0.1:8000
+
+Ada 2 akun default untuk mewakilkan masing-masing role
+Admin:
+Username: admin
+Password: admin123
+
+User:
+Username: user
+Password: user123
+
+;;;;;;;;;;;;;;fitur Otomatisasi Stok;;;;;;;;;

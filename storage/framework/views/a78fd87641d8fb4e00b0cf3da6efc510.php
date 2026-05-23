@@ -161,27 +161,7 @@
         </div> <!-- Tutup Pembungkus Utama (max-w-7xl) -->
     </div> <!-- Tutup div py-8 -->
 
-    <!-- FLOATING WISHLIST (Di luar pembungkus utama agar tetap melayang) -->
-    <div id="wishlist-toggle" class="fixed right-0 top-1/2 -translate-y-1/2 z-[9999] flex items-center group">
-        <div class="bg-white/80 backdrop-blur-lg border border-white/50 shadow-2xl rounded-l-3xl p-4 cursor-pointer hover:bg-white transition-all">
-            <div class="relative">
-                <svg class="w-8 h-8 text-red-500 fill-current animate-pulse" viewBox="0 0 24 24">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>
-                <span class="absolute -top-3 -right-3 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full border-2 border-white shadow-sm">0</span>
-            </div>
-        </div>
-        
-        <div class="invisible group-hover:visible opacity-0 group-hover:opacity-100 max-w-0 group-hover:max-w-xs transition-all duration-500">
-            <div class="bg-white/90 backdrop-blur-xl border border-white shadow-2xl rounded-l-2xl p-6 w-72">
-                <h3 class="font-black text-gray-800 text-base mb-2">❤️ My Favorites</h3>
-                <p class="text-xs text-gray-500 mb-4 italic leading-relaxed">Produk impianmu tersimpan aman di sini.</p>
-                <a href="/wishlist" class="block text-center bg-gradient-to-r from-red-500 to-pink-500 text-white py-3 rounded-xl text-xs font-black shadow-lg shadow-red-200 hover:scale-105 transition-all uppercase tracking-widest">
-                    Buka Wishlist
-                </a>
-            </div>
-        </div>
-    </div>
+    
 
     <style>
         /* KEYFRAME ANIMATIONS */
