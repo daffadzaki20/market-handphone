@@ -27,3 +27,4 @@ Thumbs.db
 
 # Keep runtime uploaded files out of Git.
 # Default sample product images are stored under public/images/products.
+storage/framework/views/*.php 
