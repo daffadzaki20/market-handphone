@@ -20,7 +20,21 @@ class OrderController extends Controller
             return redirect()->route('cart.index')->with('error', 'Keranjang kosong.');
         }
 
-        $total = $cartItems->sum(fn($item) => $item->product->price * $item->quantity);
+       $subtotal = $cartItems->sum(fn($item) => $item->product->price * $item->quantity);
+
+        $ongkir = (int) ($request->pengiriman ?? 15000);
+
+        $proteksi = ($request->proteksi ?? 0) == 1 ? 45000 : 0;
+
+        $biayaLayanan = 1000; // sesuaikan dengan checkout
+
+        $diskonVoucher = ($request->voucher ?? '') == 'DISKON50' ? 50000 : 0;
+
+        $total = $subtotal
+                + $ongkir
+                + $proteksi
+                + $biayaLayanan
+                - $diskonVoucher;
 
         $order = Order::create([
             'user_id' => Auth::id(),

@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('content'); ?>
 
 <!-- CSS & JS untuk Leaflet Maps -->
@@ -27,7 +25,7 @@
             
             <div class="overflow-hidden">
                 <div class="font-bold text-gray-800 truncate"><?php echo e(Auth::user()->username); ?></div>
-                <a href="<?php echo e(route('profile.edit')); ?>" class="text-sm text-gray-500 flex items-center gap-1 mt-0.5 hover:text-orange-500">
+                <a href="<?php echo e(route('profile')); ?>" class="text-sm text-gray-500 flex items-center gap-1 mt-0.5 hover:text-orange-500">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                     Ubah Profil
                 </a>
@@ -45,7 +43,7 @@
                     Akun Saya
                 </div>
                 <div class="pl-7 space-y-3 mt-2">
-                    <a href="<?php echo e(route('profile.edit')); ?>" class="block text-gray-600 hover:text-orange-500 transition-colors">Profil</a>
+                    <a href="<?php echo e(route('profile')); ?>" class="block text-gray-600 hover:text-orange-500 transition-colors">Profil</a>
                     <a href="<?php echo e(route('profile.bank')); ?>" class="block text-gray-600 hover:text-orange-500 transition-colors">Bank & Kartu</a>
                     <a href="<?php echo e(route('alamat.index')); ?>" class="block text-orange-500 font-medium">Alamat</a>
                     <a href="<?php echo e(route('profile.password')); ?>" class="block text-gray-600 hover:text-orange-500 transition-colors">Ubah Password</a>
@@ -696,7 +694,6 @@ function openModalAlamat(isEdit = false) {
             form.action = "<?php echo e(route('alamat.store')); ?>";
             document.getElementById('method-field').innerHTML = '';
             form.reset();
-<<<<<<< HEAD:storage/framework/views/14c46494318ea86d536bc4abd04d32d8.php
 
             const defaultLat = -6.200000;
             const defaultLng = 106.816666;
@@ -710,9 +707,6 @@ function openModalAlamat(isEdit = false) {
                 marker.setLatLng([defaultLat, defaultLng]);
             }
 
-=======
-            
->>>>>>> 230c9d94b80d609df396a78d0dd3bec83f4ac0b8:storage/framework/views/9c52ad9df08dbdbe5b85dd597368d96f.php
             ['kabupaten', 'kecamatan', 'desa'].forEach(id => {
                 document.getElementById(id).disabled = true;
                 document.getElementById(id).innerHTML = `<option value="" disabled selected>Pilih...</option>`;
@@ -734,5 +728,4 @@ function openModalAlamat(isEdit = false) {
 </script>
 
 <?php $__env->stopSection(); ?>
-
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\projek pak fajar\market-handphone\resources\views/user/profile/alamat.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\XampUtama\htdocs\handphone\resources\views/user/profile/alamat.blade.php ENDPATH**/ ?>
