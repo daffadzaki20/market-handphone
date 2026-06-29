@@ -26,7 +26,7 @@
             
             <div class="overflow-hidden">
                 <div class="font-bold text-gray-800 truncate">{{ Auth::user()->username }}</div>
-                <a href="{{ route('profile') }}" class="text-sm text-gray-500 flex items-center gap-1 mt-0.5 hover:text-orange-500">
+                <a href="{{ route('profile.edit') }}" class="text-sm text-gray-500 flex items-center gap-1 mt-0.5 hover:text-orange-500">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                     Ubah Profil
                 </a>
@@ -44,7 +44,7 @@
                     Akun Saya
                 </div>
                 <div class="pl-7 space-y-3 mt-2">
-                    <a href="{{ route('profile') }}" class="block text-gray-600 hover:text-orange-500 transition-colors">Profil</a>
+                    <a href="{{ route('profile.edit') }}" class="block text-gray-600 hover:text-orange-500 transition-colors">Profil</a>
                     <a href="{{ route('profile.bank') }}" class="block text-gray-600 hover:text-orange-500 transition-colors">Bank & Kartu</a>
                     <a href="{{ route('alamat.index') }}" class="block text-orange-500 font-medium">Alamat</a>
                     <a href="{{ route('profile.password') }}" class="block text-gray-600 hover:text-orange-500 transition-colors">Ubah Password</a>

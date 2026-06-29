@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- WRAPPER UTAMA (Agar konten rapi di tengah dan tidak nabrak tepi layar) -->
+    <!-- WRAPPER UTAMA -->
     <div class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -14,10 +14,16 @@
                 <div class="absolute -top-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
                 <div class="absolute -bottom-24 -right-24 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl group-hover:scale-110 transition-all duration-700"></div>
 
-                <!-- KONTEN HERO (Ditambahkan relative z-10 dan padding p-10 agar teks tidak nabrak tepi) -->
+                <!-- KONTEN HERO -->
                 <div class="relative z-10 p-10 md:p-16 lg:p-20 text-white">
                     <h1 class="text-4xl md:text-6xl font-black mb-6 tracking-tight leading-tight animate-fade-in-up flex flex-wrap items-center justify-start gap-4">
-                        <span>Selamat Datang di</span>
+                        {{-- Sapa user jika sudah login, tampilkan teks biasa jika belum --}}
+                        @auth
+                            <span>Halo, <span class="text-yellow-300">{{ Auth::user()->name }}!</span></span>
+                        @else
+                            <span>Selamat Datang di</span>
+                        @endauth
+
                         <br class="hidden md:block">
                         <div class="flex items-center gap-4">
                             <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-300 to-yellow-200">
@@ -48,16 +54,28 @@
                     </p>
                     
                     <div class="flex flex-wrap gap-4 animate-fade-in-up delay-200">
-                        <a href="#katalog" class="bg-white text-blue-600 px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-white/20 hover:scale-105 transition-all">Mulai Belanja</a>
-                        <div class="bg-white/10 backdrop-blur-md px-6 py-3 rounded-full border border-white/20 text-sm font-medium">✨ 100% Original</div>
+                        {{-- Tombol utama: anchor ke #kategori (bukan #katalog) --}}
+                        <a href="#kategori" class="bg-white text-blue-600 px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-white/20 hover:scale-105 transition-all">
+                            Mulai Belanja
+                        </a>
+
+                       
+
+                        {{-- Tombol ke cart hanya untuk user yang sudah login --}}
+                       
+
+                        <div class="bg-white/10 backdrop-blur-md px-6 py-3 rounded-full border border-white/20 text-sm font-medium">
+                            ✨ 100% Original
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- QUICK ACTION / KATEGORI -->
+            {{-- id="kategori" sesuai dengan href="#kategori" di tombol hero --}}
             <div id="kategori" class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
                 <!-- KATEGORI HP -->
-                <a href="{{ route('handphone.index') }}" class="relative overflow-hidden bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group">
+                <a href="{{ route('products.handphone') }}" class="relative overflow-hidden bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group">
                     <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                         <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm0 18H7V5h10v14z"/></svg>
                     </div>
@@ -74,7 +92,7 @@
                 </a>
 
                 <!-- KATEGORI AKSESORIS -->
-                <a href="{{ route('aksesoris.index') }}" class="relative overflow-hidden bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group">
+                <a href="{{ route('products.aksesoris') }}" class="relative overflow-hidden bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-500 group">
                     <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                         <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-9 9v7c0 1.1.9 2 2 2h4v-8H5v-1a7 7 0 0 1 14 0v1h-4v8h4c1.1 0 2-.9 2-2v-7a9 9 0 0 0-9-9z"/></svg>
                     </div>
@@ -90,8 +108,6 @@
                     </div>
                 </a>
             </div>
-
-          
 
             <!-- SECTION: WHY CHOOSE US -->
             <div class="mb-16">
@@ -148,45 +164,24 @@
                             </p>
                         </div>
                         <a href="https://maps.google.com" target="_blank" class="mt-8 inline-flex items-center gap-2 text-white font-bold text-sm bg-blue-600 px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors w-fit">
-                            Petunjuk Arah <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            Petunjuk Arah
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </a>
                     </div>
                     <!-- Peta -->
                     <div class="md:w-2/3 h-64 md:h-auto grayscale hover:grayscale-0 transition-all duration-700">
                         <iframe 
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127504.42574883445!2d114.50912188448835!3d-3.321683935292419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dee3f3f3f3f3f3f%3A0x3f3f3f3f3f3f3f3f!2sBanjarmasin!5e0!3m2!1sid!2sid!4v1620000000000!5m2!1sid!2sid" 
-                            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+                        </iframe>
                     </div>
                 </div>
             </div>
 
-        </div> <!-- Tutup Pembungkus Utama (max-w-7xl) -->
-    </div> <!-- Tutup div py-8 -->
-
-    {{-- <!-- FLOATING WISHLIST (Di luar pembungkus utama agar tetap melayang) -->
-    <div id="wishlist-toggle" class="fixed right-0 top-1/2 -translate-y-1/2 z-[9999] flex items-center group">
-        <div class="bg-white/80 backdrop-blur-lg border border-white/50 shadow-2xl rounded-l-3xl p-4 cursor-pointer hover:bg-white transition-all">
-            <div class="relative">
-                <svg class="w-8 h-8 text-red-500 fill-current animate-pulse" viewBox="0 0 24 24">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>
-                <span class="absolute -top-3 -right-3 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full border-2 border-white shadow-sm">0</span>
-            </div>
-        </div>
-        
-        <div class="invisible group-hover:visible opacity-0 group-hover:opacity-100 max-w-0 group-hover:max-w-xs transition-all duration-500">
-            <div class="bg-white/90 backdrop-blur-xl border border-white shadow-2xl rounded-l-2xl p-6 w-72">
-                <h3 class="font-black text-gray-800 text-base mb-2">❤️ My Favorites</h3>
-                <p class="text-xs text-gray-500 mb-4 italic leading-relaxed">Produk impianmu tersimpan aman di sini.</p>
-                <a href="/wishlist" class="block text-center bg-gradient-to-r from-red-500 to-pink-500 text-white py-3 rounded-xl text-xs font-black shadow-lg shadow-red-200 hover:scale-105 transition-all uppercase tracking-widest">
-                    Buka Wishlist
-                </a>
-            </div>
-        </div>
-    </div> --}}
+        </div><!-- Tutup max-w-7xl -->
+    </div><!-- Tutup py-8 -->
 
     <style>
-        /* KEYFRAME ANIMATIONS */
         @keyframes gradient-xy {
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -195,23 +190,12 @@
             background-size: 400% 400%;
             animation: gradient-xy 15s ease infinite;
         }
-
         .animate-fade-in-up {
             animation: fadeInUp 0.8s ease-out forwards;
         }
-
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Wishlist Toggle Concept */
-        #wishlist-toggle {
-            transform: translateX(calc(100% - 60px));
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        #wishlist-toggle:hover {
-            transform: translateX(0);
         }
     </style>
 

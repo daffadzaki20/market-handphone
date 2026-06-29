@@ -19,7 +19,7 @@ class AuthController extends Controller
             'name'     => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'min:8'], // Pakai 'confirmed' karena kamu tadi setuju pakai 2 field
+            'password' => ['required', 'min:8', 'confirmed'], // Pakai 'confirmed' karena kamu tadi setuju pakai 2 field
         ], [
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
             'username.unique'    => 'Username sudah terpakai.',
@@ -73,12 +73,11 @@ class AuthController extends Controller
         ])->onlyInput('login');
     }
 
-    public function logout()
-    {
-        Auth::logout();
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
-
-        return redirect('/login');
-    }
+    public function logout(Request $request)
+{
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/login');
+}
 }

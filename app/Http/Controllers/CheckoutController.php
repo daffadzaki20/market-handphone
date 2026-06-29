@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Alamat;
 use App\Models\Cart;
+use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,19 +32,17 @@ class CheckoutController extends Controller
 
         $ongkir = 15000;
         $biayaLayanan = 1000;
-        $totalPembayaran = $totalHarga + $ongkir + $biayaLayanan;
+        $grandTotal = $totalHarga + $ongkir + $biayaLayanan;
 
         // 4. LOGIKA PILIH ALAMAT (Manual via Modal atau Default)
         $pilihanAlamatId = $request->query('alamat_id');
 
         if ($pilihanAlamatId) {
-            // Jika user memilih alamat tertentu dari modal
             $alamatUtama = Alamat::with('user')
                 ->where('id', $pilihanAlamatId)
                 ->where('user_id', Auth::id())
                 ->first();
         } else {
-            // Default: Ambil alamat utama, jika tidak ada ambil yang terbaru
             $alamatUtama = Alamat::with('user')
                 ->where('user_id', Auth::id())
                 ->where('is_utama', true)
@@ -54,20 +53,24 @@ class CheckoutController extends Controller
                     ->first();
         }
 
-        // 5. Ambil semua daftar alamat untuk ditampilkan di dalam Modal
+        // 5. Ambil semua daftar alamat untuk Modal
         $semuaAlamat = Alamat::with('user')
             ->where('user_id', Auth::id())
             ->latest()
             ->get();
 
-        // 6. Kirim semua variabel ke View
+        // 6. Ambil kartu kredit/debit user
+        $kartu = Auth::user()->paymentMethods()->where('type', 'kartu')->get();
+
+        // 7. Kirim semua variabel ke View
         return view('user.checkout', compact(
-            'alamatUtama', 
-            'checkoutItems', 
-            'totalHarga', 
-            'biayaLayanan', 
-            'totalPembayaran',
-            'semuaAlamat'
+            'alamatUtama',
+            'checkoutItems',
+            'totalHarga',
+            'biayaLayanan',
+            'grandTotal',
+            'semuaAlamat',
+            'kartu'
         ));
     }
 }

@@ -9,7 +9,7 @@
          <h1 class="text-3xl font-black text-gray-800 tracking-tight mb-6">📱 Handphone</h1>
 
          <!-- 🔍 SEARCH BAR -->
-         <form method="GET" action="{{ route('handphone.index') }}" class="mb-6 flex gap-3" id="searchForm">
+         <form method="GET" action="{{ route('products.handphone') }}" class="mb-6 flex gap-3" id="searchForm">
              <div class="relative w-full">
                  <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                      <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -29,21 +29,21 @@
          </form>
 
          <!-- 🏷️ FILTER BRAND -->
-<div class="flex flex-wrap gap-2 mb-8">
-    <a href="{{ route('handphone.index', array_filter(['search' => request('search')])) }}"
-       class="px-4 py-1.5 rounded-full text-sm font-medium transition-all shadow-sm
-       {{ !request('brand') ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200' }}">
-        Semua Brand
-    </a>
+        <div class="flex flex-wrap gap-2 mb-8">
+            <a href="{{ route('products.handphone', array_filter(['search' => request('search')])) }}"
+               class="px-4 py-1.5 rounded-full text-sm font-medium transition-all shadow-sm
+               {{ !request('brand') ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200' }}">
+                Semua Brand
+            </a>
 
-    @foreach ($brands as $brand)
-    <a href="{{ route('handphone.index', array_filter(['brand' => $brand->slug, 'search' => request('search')])) }}"
-       class="px-4 py-1.5 rounded-full text-sm font-medium transition-all shadow-sm
-       {{ request('brand') == $brand->slug ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200' }}">
-        {{ $brand->name }}
-    </a>
-    @endforeach
-</div>
+            @foreach ($brands as $brand)
+            <a href="{{ route('products.handphone', array_filter(['brand' => $brand->slug, 'search' => request('search')])) }}"
+               class="px-4 py-1.5 rounded-full text-sm font-medium transition-all shadow-sm
+               {{ request('brand') == $brand->slug ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200' }}">
+                {{ $brand->name }}
+            </a>
+            @endforeach
+        </div>
 
         <!-- ========================================== -->
         <!-- BUNGKUSAN PRODUK (PENTING UNTUK LIVE SEARCH) -->
@@ -64,7 +64,6 @@
                                      alt="{{ $product->name }}"
                                      class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             @else
-                                <!-- Placeholder jika tidak ada gambar -->
                                 <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                             @endif
                         </div>
@@ -90,7 +89,6 @@
                         </div>
                     </a>
                 @empty
-                    <!-- Tampilan jika produk tidak ditemukan -->
                     <div class="col-span-full py-16 flex flex-col items-center justify-center text-gray-500 bg-white rounded-2xl border border-gray-200 border-dashed">
                         <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         <h3 class="text-lg font-bold text-gray-800">Pencarian Tidak Ditemukan</h3>
@@ -107,7 +105,7 @@
 
         </div>
 
-    </div> <!-- Tutup Wrapper Utama -->
+    </div>
 
     <!-- SCRIPT LIVE SEARCH (AJAX) -->
     <script>
@@ -115,17 +113,15 @@
             const searchInput = document.getElementById('searchInput');
             const productContainer = document.getElementById('productContainer');
             let typingTimer;
-            const doneTypingInterval = 500; // Jeda 0.5 detik
+            const doneTypingInterval = 500;
 
             searchInput.addEventListener('input', function () {
                 clearTimeout(typingTimer);
                 const keyword = this.value;
 
-                // Efek Loading: Transparan
                 productContainer.style.opacity = '0.4';
 
                 typingTimer = setTimeout(function () {
-                    // Ambil URL saat ini dan tambahkan/ubah parameter pencarian
                     const url = new URL(window.location.href);
                     if (keyword) {
                         url.searchParams.set('search', keyword);
@@ -133,24 +129,18 @@
                         url.searchParams.delete('search');
                     }
 
-                    // Ambil data terbaru dari server di belakang layar
                     fetch(url)
                         .then(response => response.text())
                         .then(html => {
-                            // Parsing HTML yang didapat
                             const parser = new DOMParser();
                             const doc = parser.parseFromString(html, 'text/html');
                             
-                            // Timpa kotak produk lama dengan yang baru
                             const newContainer = doc.getElementById('productContainer');
                             if(newContainer) {
                                 productContainer.innerHTML = newContainer.innerHTML;
                             }
                             
-                            // Kembalikan efek loading
                             productContainer.style.opacity = '1';
-
-                            // Ubah URL di atas browser (agar jika di-refresh hasilnya tetap)
                             window.history.pushState({}, '', url);
                         })
                         .catch(error => {
@@ -160,7 +150,6 @@
                 }, doneTypingInterval);
             });
             
-            // Mencegah form di-submit manual dengan Enter jika JS berjalan
             document.getElementById('searchForm').addEventListener('submit', function(e) {
                 e.preventDefault();
             });

@@ -50,9 +50,36 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    // ======================================================================
+    // 🏛️ DAFTAR RELASI DATABASE
+    // ======================================================================
+
     public function orders()
     {
         return $this->hasMany(\App\Models\Order::class);
     }
-}
 
+    // 🔥 Ini yang menyembuhkan error 500 saat tambah kartu tadi!
+    public function paymentMethods()
+    {
+        return $this->hasMany(\App\Models\PaymentMethod::class);
+    }
+
+    // Relasi untuk manajemen alamat pengiriman
+    public function alamats()
+    {
+        return $this->hasMany(\App\Models\Alamat::class);
+    }
+
+    // Relasi untuk fitur favorit / wishlist
+    public function wishlists()
+    {
+        return $this->hasMany(\App\Models\Wishlist::class);
+    }
+
+    // Relasi ke keranjang belanja
+    public function carts()
+    {
+        return $this->hasMany(\App\Models\Cart::class);
+    }
+}

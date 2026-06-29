@@ -45,7 +45,7 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return Redirect::route('profile')->with('success', 'Profil berhasil diperbarui!');
+      return redirect()->route('profile.edit');
     }
 
     public function uploadPhoto(Request $request): RedirectResponse

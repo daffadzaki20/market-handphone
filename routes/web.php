@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 // Controllers
 use App\Http\Controllers\DashboardController;
@@ -11,17 +12,14 @@ use App\Http\Controllers\AlamatController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\PaymentMethodController;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| HOME → Selalu buka dashboard dulu (public, tanpa cek login)
 |--------------------------------------------------------------------------
 */
-
-// HOME (LANGSUNG KE LOGIN)
-Route::get('/', function () {
-    return redirect('/login');
-});
+Route::get('/', [DashboardController::class, 'index'])->name('home');
 
 /*
 |--------------------------------------------------------------------------
@@ -30,85 +28,135 @@ Route::get('/', function () {
 */
 require __DIR__.'/auth.php';
 
+/*
+|--------------------------------------------------------------------------
+| AUTHENTICATED ROUTES
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth')->group(function () {
 
-    // ----------------------------------------------------------------------
-    // DASHBOARD
-    // ----------------------------------------------------------------------
+    // ------------------------------------------------------------------
+    // DASHBOARD (untuk user yang sudah login, akses /dashboard)
+    // ------------------------------------------------------------------
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/admin', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard');
 
-    // ----------------------------------------------------------------------
+    // ------------------------------------------------------------------
     // PROFIL
-    // ----------------------------------------------------------------------
-    Route::prefix('profile')->group(function () {
-        Route::get('/', [ProfileController::class, 'edit'])->name('profile');
-        Route::post('/update', [ProfileController::class, 'update'])->name('profile.update');
-        Route::post('/photo', [ProfileController::class, 'uploadPhoto'])->name('profile.photo');
-        Route::get('/password', [ProfileController::class, 'passwordForm'])->name('profile.password');
-        Route::post('/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
-        Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
-        Route::view('/bank', 'user.profile.bank')->name('profile.bank');
-        Route::get('/pesanan', [ProfileController::class, 'orders'])->name('profile.orders');
-        Route::view('/notifikasi', 'user.profile.notifikasi')->name('profile.notifications');
-        Route::view('/voucher', 'user.profile.voucher')->name('profile.voucher');
+    // ------------------------------------------------------------------
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/',              [ProfileController::class, 'edit'])->name('edit');
+        Route::post('/update',       [ProfileController::class, 'update'])->name('update');
+        Route::post('/photo',        [ProfileController::class, 'uploadPhoto'])->name('photo');
+        Route::delete('/',           [ProfileController::class, 'destroy'])->name('destroy');
+
+        Route::get('/password',      [ProfileController::class, 'passwordForm'])->name('password');
+        Route::post('/password',     [ProfileController::class, 'updatePassword'])->name('password.update');
+
+        Route::get('/pesanan',       [ProfileController::class, 'orders'])->name('orders');
+
+        // Payment Method (Bank/Kartu)
+        Route::get('/bank',          [PaymentMethodController::class, 'index'])->name('bank');
+        Route::post('/kartu/store',          [PaymentMethodController::class, 'storeCard'])->name('card.store');
+        Route::post('/kartu/{id}/detail',    [PaymentMethodController::class, 'getCardDetails'])->name('card.detail');
+        Route::delete('/kartu/{id}',         [PaymentMethodController::class, 'destroy'])->name('bank.destroy');
+
+        Route::view('/notifikasi',   'user.profile.notifikasi')->name('notifications');
+        Route::view('/voucher',      'user.profile.voucher')->name('voucher');
     });
 
+    // ------------------------------------------------------------------
     // ALAMAT
-    Route::get('/profile/alamat', [AlamatController::class, 'index'])->name('alamat.index');
-    Route::post('/profile/alamat', [AlamatController::class, 'store'])->name('alamat.store');
-    Route::delete('/profile/alamat/{id}', [AlamatController::class, 'destroy'])->name('alamat.destroy');
-    Route::put('/profile/alamat/{id}', [AlamatController::class, 'update'])->name('alamat.update');
+    // ------------------------------------------------------------------
+    Route::prefix('profile/alamat')->name('alamat.')->group(function () {
+        Route::get('/',       [AlamatController::class, 'index'])->name('index');
+        Route::post('/',      [AlamatController::class, 'store'])->name('store');
+        Route::put('/{id}',   [AlamatController::class, 'update'])->name('update');
+        Route::delete('/{id}',[AlamatController::class, 'destroy'])->name('destroy');
+    });
 
-    // TRANSAKSI & KERANJANG
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/add/{id}', [CartController::class, 'store'])->name('cart.add');
-    Route::delete('/cart/remove/{id}', [CartController::class, 'destroy'])->name('cart.remove');
-    Route::patch('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
-    Route::delete('/cart/bulk-delete', [CartController::class, 'bulkDelete'])->name('cart.bulk-delete');
+    // ------------------------------------------------------------------
+    // KERANJANG
+    // ------------------------------------------------------------------
+    Route::prefix('cart')->name('cart.')->group(function () {
+        Route::get('/',               [CartController::class, 'index'])->name('index');
+        Route::post('/add/{id}',      [CartController::class, 'store'])->name('add');
+        Route::patch('/update/{id}',  [CartController::class, 'update'])->name('update');
+        Route::delete('/remove/{id}', [CartController::class, 'destroy'])->name('remove');
+        Route::delete('/bulk-delete', [CartController::class, 'bulkDelete'])->name('bulk-delete');
+    });
 
+    // ------------------------------------------------------------------
+    // CHECKOUT & ORDER (USER)
+    // ------------------------------------------------------------------
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout/process', [OrderController::class, 'process'])->name('checkout.process');
 
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-
-    // HALAMAN PRODUK
-    Route::get('/products/handphone', [ProductController::class, 'handphoneIndex'])->name('handphone.index');
-    Route::get('/products/aksesoris', [ProductController::class, 'aksesorisIndex'])->name('aksesoris.index');
-    Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
-
-    // ADMIN PAGE
-    Route::get('/admin/handphones', [ProductController::class, 'adminHandphoneIndex'])->name('admin.handphones.index');
-    Route::get('/admin/handphones/create', [ProductController::class, 'adminHandphoneCreate'])->name('admin.handphones.create');
-    Route::post('/admin/handphones', [ProductController::class, 'adminHandphoneStore'])->name('admin.handphones.store');
-    Route::get('/admin/handphones/{id}', [ProductController::class, 'adminHandphoneShow'])->name('admin.handphones.show');
-    Route::get('/admin/handphones/{id}/edit', [ProductController::class, 'adminHandphoneEdit'])->name('admin.handphones.edit');
-    Route::put('/admin/handphones/{id}', [ProductController::class, 'adminHandphoneUpdate'])->name('admin.handphones.update');
-    Route::delete('/admin/handphones/{id}', [ProductController::class, 'adminHandphoneDestroy'])->name('admin.handphones.destroy');
-
-    Route::get('/admin/aksesoris', [ProductController::class, 'adminAksesorisIndex'])->name('admin.aksesoris.index');
-    Route::get('/admin/aksesoris/create', [ProductController::class, 'adminAksesorisCreate'])->name('admin.aksesoris.create');
-    Route::post('/admin/aksesoris', [ProductController::class, 'adminAksesorisStore'])->name('admin.aksesoris.store');
-    Route::get('/admin/aksesoris/{id}', [ProductController::class, 'adminAksesorisShow'])->name('admin.aksesoris.show');
-    Route::get('/admin/aksesoris/{id}/edit', [ProductController::class, 'adminAksesorisEdit'])->name('admin.aksesoris.edit');
-    Route::put('/admin/aksesoris/{id}', [ProductController::class, 'adminAksesorisUpdate'])->name('admin.aksesoris.update');
-    Route::delete('/admin/aksesoris/{id}', [ProductController::class, 'adminAksesorisDestroy'])->name('admin.aksesoris.destroy');
-
-    Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
-    Route::get('/admin/users/create', [AdminUserController::class, 'create'])->name('admin.users.create');
-    Route::post('/admin/users', [AdminUserController::class, 'store'])->name('admin.users.store');
-    Route::get('/admin/users/{id}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit');
-    Route::put('/admin/users/{id}', [AdminUserController::class, 'update'])->name('admin.users.update');
-    Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::get('/',            [OrderController::class, 'index'])->name('index');
+        Route::get('/{order}',     [OrderController::class, 'show'])->name('show');
+        Route::put('/{id}/cancel', [OrderController::class, 'userCancel'])->name('cancel');
+    });
 
     Route::get('/order/success/{id}', [OrderController::class, 'success'])->name('order.success');
-    Route::get('/admin/orders/pdf', [DashboardController::class, 'exportPdf'])->name('admin.laporan.pdf');
-    Route::get('/admin/orders', [OrderController::class, 'adminIndex'])->name('admin.orders.index');
-    Route::get('/admin/orders/{id}/detail', [OrderController::class, 'adminShow'])->name('admin.orders.show');
-    Route::put('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
-    Route::put('/admin/orders/{id}/cancel', [OrderController::class, 'adminCancel'])->name('admin.orders.cancel');
-    
-    Route::put('/orders/{id}/cancel', [OrderController::class, 'userCancel'])->name('user.orders.cancel');
 
+    // ------------------------------------------------------------------
+    // ADMIN ROUTES (proteksi role admin)
+    // ------------------------------------------------------------------
+    Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {
+
+        Route::get('/', [DashboardController::class, 'adminDashboard'])->name('dashboard');
+
+        // Handphone
+        Route::prefix('handphones')->name('handphones.')->group(function () {
+            Route::get('/',           [ProductController::class, 'adminHandphoneIndex'])->name('index');
+            Route::get('/create',     [ProductController::class, 'adminHandphoneCreate'])->name('create');
+            Route::post('/',          [ProductController::class, 'adminHandphoneStore'])->name('store');
+            Route::get('/{id}',       [ProductController::class, 'adminHandphoneShow'])->name('show');
+            Route::get('/{id}/edit',  [ProductController::class, 'adminHandphoneEdit'])->name('edit');
+            Route::put('/{id}',       [ProductController::class, 'adminHandphoneUpdate'])->name('update');
+            Route::delete('/{id}',    [ProductController::class, 'adminHandphoneDestroy'])->name('destroy');
+        });
+
+        // Aksesoris
+        Route::prefix('aksesoris')->name('aksesoris.')->group(function () {
+            Route::get('/',           [ProductController::class, 'adminAksesorisIndex'])->name('index');
+            Route::get('/create',     [ProductController::class, 'adminAksesorisCreate'])->name('create');
+            Route::post('/',          [ProductController::class, 'adminAksesorisStore'])->name('store');
+            Route::get('/{id}',       [ProductController::class, 'adminAksesorisShow'])->name('show');
+            Route::get('/{id}/edit',  [ProductController::class, 'adminAksesorisEdit'])->name('edit');
+            Route::put('/{id}',       [ProductController::class, 'adminAksesorisUpdate'])->name('update');
+            Route::delete('/{id}',    [ProductController::class, 'adminAksesorisDestroy'])->name('destroy');
+        });
+
+        // Users
+        Route::prefix('users')->name('users.')->group(function () {
+            Route::get('/',          [AdminUserController::class, 'index'])->name('index');
+            Route::get('/create',    [AdminUserController::class, 'create'])->name('create');
+            Route::post('/',         [AdminUserController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [AdminUserController::class, 'edit'])->name('edit');
+            Route::put('/{id}',      [AdminUserController::class, 'update'])->name('update');
+            Route::delete('/{id}',   [AdminUserController::class, 'destroy'])->name('destroy');
+            
+        });
+
+        // Orders Admin
+        Route::prefix('orders')->name('orders.')->group(function () {
+            Route::get('/',            [OrderController::class, 'adminIndex'])->name('index');
+            Route::get('/{id}/detail', [OrderController::class, 'adminShow'])->name('show');
+            Route::put('/{id}/status', [OrderController::class, 'updateStatus'])->name('updateStatus');
+            Route::put('/{id}/cancel', [OrderController::class, 'adminCancel'])->name('cancel');
+        });
+
+        // Laporan PDF
+        Route::get('/laporan/pdf', [DashboardController::class, 'exportPdf'])->name('laporan.pdf');
     });
+});
+
+// ------------------------------------------------------------------
+// PRODUK (PUBLIC - bisa diakses tanpa login)
+// ------------------------------------------------------------------
+Route::prefix('products')->name('products.')->group(function () {
+    Route::get('/handphone', [ProductController::class, 'handphoneIndex'])->name('handphone');
+    Route::get('/aksesoris', [ProductController::class, 'aksesorisIndex'])->name('aksesoris');
+});
+Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');

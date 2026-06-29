@@ -41,7 +41,7 @@
                         Akun Saya
                     </div>
                    <div class="pl-7 space-y-3 mt-2">
-                    <a href="{{ route('profile') }}" class="block text-orange-500 font-medium">Profil</a>
+                    <a href="{{ route('profile.edit') }}" class="block text-orange-500 font-medium">Profil</a>
                     <a href="{{ route('profile.bank') }}" class="block text-gray-600 hover:text-orange-500 transition-colors">Bank & Kartu</a>
                     <a href="{{ route('alamat.index') }}" class="block text-gray-600 hover:text-orange-500 transition-colors">Alamat</a>
                     <a href="{{ route('profile.password') }}" class="block text-gray-600 hover:text-orange-500 transition-colors">Ubah Password</a>

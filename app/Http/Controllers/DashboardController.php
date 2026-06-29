@@ -16,8 +16,15 @@ class DashboardController extends Controller
 {
     public function index(): View|RedirectResponse
     {
+        // Kalau belum login, tetap tampilkan dashboard versi guest
+        if (!Auth::check()) {
+            $products = Product::with('brand')->get();
+            return view('user.dashboard', compact('products'));
+        }
+
         $user = Auth::user();
 
+        // Kalau admin, redirect ke admin dashboard
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
@@ -29,24 +36,25 @@ class DashboardController extends Controller
 
     public function adminDashboard(): View
     {
-        $user = Auth::user();
-        if ($user->role !== 'admin') {
-            abort(403, 'Akses ditolak. Hanya admin yang dapat mengakses halaman ini.');
-        }
+        // Gunakan Gate/middleware saja, tidak perlu cek manual di sini
+        // Karena route sudah diproteksi middleware('can:admin')
+        $totalProducts      = Product::count();
+        $totalBrands        = Brand::count();
+        $totalUsers         = User::count();
+        $handphoneCount     = Product::whereHas('brand', fn($b) => $b->where('type', 'hp'))->count();
+        $accessoriesCount   = Product::whereHas('brand', fn($b) => $b->where('type', 'aksesoris'))->count();
+        $totalInventoryValue = Product::selectRaw('COALESCE(SUM(price * stock), 0) as total')->value('total');
 
-        $totalProducts = Product::query()->count('id');
-        $totalBrands = Brand::query()->count('id');
-        $totalUsers = User::query()->count('id');
-        $handphoneCount = Product::query()->whereHas('brand', function ($b) {
-            $b->where('type', 'hp');
-        })->count('id');
-        $accessoriesCount = Product::query()->whereHas('brand', function ($b) {
-            $b->where('type', 'aksesoris');
-        })->count('id');
-        $totalInventoryValue = Product::query()->selectRaw('COALESCE(SUM(price * stock), 0) as total')->value('total');
+        $lowStockProducts = Product::with('brand')
+            ->where('stock', '<=', 5)
+            ->orderBy('stock')
+            ->limit(5)
+            ->get();
 
-        $lowStockProducts = Product::with('brand')->where('stock', '<=', 5)->orderBy('stock')->limit(5)->get();
-        $latestProducts = Product::with('brand')->latest()->limit(6)->get();
+        $latestProducts = Product::with('brand')
+            ->latest()
+            ->limit(6)
+            ->get();
 
         return view('admin.dashboard', compact(
             'totalProducts',
@@ -59,15 +67,14 @@ class DashboardController extends Controller
             'latestProducts'
         ));
     }
+
     public function exportPdf()
     {
         $orders = Order::with('user')->orderBy('created_at', 'desc')->get();
 
         $pdf = Pdf::loadView('admin.laporan.pdf_view', compact('orders'));
-        
         $pdf->setPaper('A4', 'landscape');
 
         return $pdf->download('Laporan-Penjualan-MyPhoneStore.pdf');
-        
     }
 }

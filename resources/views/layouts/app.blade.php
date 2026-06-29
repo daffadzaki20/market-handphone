@@ -7,69 +7,77 @@
 
     <title>{{ config('app.name', 'MyPhoneStore') }}</title>
 
-    <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
-    <!-- CSS Tambahan -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
     <style>
         .cloak-icon { width: 32px !important; height: 32px !important; color: #6b7280; }
-        }
     </style>
 </head>
 
 <body class="font-sans antialiased text-gray-900 bg-gray-100" style="background-color: #f3f4f6;">
 
     <div class="min-h-screen">
-        <!-- ========================================== -->
-        <!-- NAVBAR CUSTOM MYPHONESTORE -->
-        <!-- ========================================== -->
         <nav x-data="{ mobileMenuOpen: false }" class="bg-white shadow-md relative z-[50]">
             <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
 
-                <a href="{{ route('dashboard') }}" class="text-xl font-black text-blue-600 tracking-tight hover:scale-105 transition-transform">
+                {{-- Logo → ke '/' (home public) --}}
+                <a href="{{ url('/') }}" class="text-xl font-black text-blue-600 tracking-tight hover:scale-105 transition-transform">
                     📱 MyPhoneStore
                 </a>
 
+                {{-- DESKTOP NAV --}}
                 <div class="hidden md:flex space-x-8 text-sm font-bold">
-                    <a href="{{ route('dashboard') }}" class="pb-1 transition-colors duration-200 {{ request()->is('dashboard') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
+                    <a href="{{ url('/') }}" class="pb-1 transition-colors duration-200 {{ request()->is('/') || request()->is('dashboard') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
                         Home
                     </a>
-                    <a href="{{ route('handphone.index') }}" class="pb-1 transition-colors duration-200 {{ request()->is('products/handphone') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
+                    <a href="{{ route('products.handphone') }}" class="pb-1 transition-colors duration-200 {{ request()->is('products/handphone') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
                         Handphone
                     </a>
-                    <a href="{{ route('aksesoris.index') }}" class="pb-1 transition-colors duration-200 {{ request()->is('products/aksesoris') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
+                    <a href="{{ route('products.aksesoris') }}" class="pb-1 transition-colors duration-200 {{ request()->is('products/aksesoris') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
                         Aksesoris
                     </a>
-                    <a href="{{ route('orders.index') }}" class="pb-1 transition-colors duration-200 {{ request()->is('orders') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
-                        Pesanan Saya
-                    </a>
+                    {{-- Pesanan hanya tampil jika sudah login --}}
+                    @auth
+                        <a href="{{ route('orders.index') }}" class="pb-1 transition-colors duration-200 {{ request()->is('orders') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500' }}">
+                            Pesanan Saya
+                        </a>
+                    @endauth
                 </div>
 
+                {{-- ICON KANAN --}}
                 <div class="flex items-center gap-4 sm:gap-5">
+
+                    {{-- Notifikasi: hanya untuk user login --}}
                     @auth
-                    <a href="{{ route('profile.notifications') }}" class="relative text-gray-400 hover:text-orange-500 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                        </svg>
-                        <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm">
-                            3
-                        </span>
-                    </a>
+                        <a href="{{ route('profile.notifications') }}" class="relative text-gray-400 hover:text-orange-500 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                            </svg>
+                            <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm">
+                                3
+                            </span>
+                        </a>
                     @endauth
-                    
-                    <a href="{{ route('cart.index') }}" id="cart-icon" class="relative text-gray-400 hover:text-orange-500 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                        <span id="cart-count" class="absolute -top-1.5 -right-1.5 bg-orange-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm">
-                            {{ Auth::check() ? \App\Models\Cart::where('user_id', Auth::id())->sum('quantity') : 0 }}
-                        </span>
-                    </a>
+
+                    {{-- Cart: hanya untuk user login --}}
+                    @auth
+                        <a href="{{ route('cart.index') }}" id="cart-icon" class="relative text-gray-400 hover:text-orange-500 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            <span id="cart-count" class="absolute -top-1.5 -right-1.5 bg-orange-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm">
+                                {{ \App\Models\Cart::where('user_id', Auth::id())->sum('quantity') }}
+                            </span>
+                        </a>
+                    @endauth
 
                     <div class="hidden sm:block h-6 w-[2px] bg-gray-200 mx-1"></div>
 
-                    <a href="{{ Auth::check() ? route('profile') : route('login') }}" class="flex items-center gap-2 hover:bg-gray-50 px-2 py-1.5 rounded-full transition-colors group">
-                        @auth
+                    {{-- Avatar / Login --}}
+                    @auth
+                        <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 hover:bg-gray-50 px-2 py-1.5 rounded-full transition-colors group">
                             @if(Auth::user()->profile_photo)
                                 <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" class="w-8 h-8 rounded-full border border-gray-200 shadow-sm object-cover group-hover:border-blue-500 transition-colors">
                             @else
@@ -80,16 +88,20 @@
                             <span class="font-bold text-sm text-gray-700 hidden lg:block group-hover:text-blue-600 transition-colors">
                                 {{ Auth::user()->username ?? Auth::user()->name }}
                             </span>
-                        @else
+                        </a>
+                    @else
+                        {{-- Guest: tampilkan tombol login --}}
+                        <a href="{{ route('login') }}" class="flex items-center gap-2 hover:bg-gray-50 px-2 py-1.5 rounded-full transition-colors group">
                             <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200 shadow-sm text-gray-500 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                 </svg>
                             </div>
                             <span class="font-bold text-sm text-gray-700 hidden lg:block group-hover:text-blue-600 transition-colors">Login</span>
-                        @endauth
-                    </a>
+                        </a>
+                    @endauth
 
+                    {{-- Hamburger Mobile --}}
                     <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-blue-600 hover:bg-gray-100 focus:outline-none transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="!mobileMenuOpen">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -101,6 +113,7 @@
                 </div>
             </div>
 
+            {{-- MOBILE MENU --}}
             <div x-show="mobileMenuOpen" 
                  x-transition:enter="transition ease-out duration-200"
                  x-transition:enter-start="opacity-0 -translate-y-2"
@@ -111,23 +124,44 @@
                  class="md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 shadow-xl"
                  style="display: none;">
                 <div class="px-4 pt-2 pb-4 space-y-1">
-                    <a href="{{ route('dashboard') }}" class="block px-4 py-3 rounded-xl font-bold {{ request()->is('dashboard') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600' }}">
+                    <a href="{{ url('/') }}" class="block px-4 py-3 rounded-xl font-bold {{ request()->is('/') || request()->is('dashboard') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600' }}">
                         🏠 Home
                     </a>
-                    <a href="{{ route('handphone.index') }}" class="block px-4 py-3 rounded-xl font-bold {{ request()->is('products/handphone') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600' }}">
+                    <a href="{{ route('products.handphone') }}" class="block px-4 py-3 rounded-xl font-bold {{ request()->is('products/handphone') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600' }}">
                         📱 Handphone
                     </a>
-                    <a href="{{ route('aksesoris.index') }}" class="block px-4 py-3 rounded-xl font-bold {{ request()->is('products/aksesoris') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600' }}">
+                    <a href="{{ route('products.aksesoris') }}" class="block px-4 py-3 rounded-xl font-bold {{ request()->is('products/aksesoris') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600' }}">
                         🎧 Aksesoris
                     </a>
-                    <a href="{{ route('orders.index') }}" class="block px-4 py-3 rounded-xl font-bold {{ request()->is('orders') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600' }}">
-                        📦 Pesanan Saya
-                    </a>
+                    @auth
+                        <a href="{{ route('orders.index') }}" class="block px-4 py-3 rounded-xl font-bold {{ request()->is('orders') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600' }}">
+                            📦 Pesanan Saya
+                        </a>
+                        <a href="{{ route('profile.edit') }}" class="block px-4 py-3 rounded-xl font-bold {{ request()->is('profile') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600' }}">
+                            👤 Profil Saya
+                        </a>
+                        <div class="border-t border-gray-100 pt-2 mt-2">
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="w-full text-left block px-4 py-3 rounded-xl font-bold text-red-500 hover:bg-red-50 transition-colors">
+                                    🚪 Logout
+                                </button>
+                            </form>
+                        </div>
+                    @else
+                        <div class="border-t border-gray-100 pt-2 mt-2">
+                            <a href="{{ route('login') }}" class="block px-4 py-3 rounded-xl font-bold text-blue-600 hover:bg-blue-50">
+                                🔐 Login
+                            </a>
+                            <a href="{{ route('register') }}" class="block px-4 py-3 rounded-xl font-bold text-orange-500 hover:bg-orange-50">
+                                📝 Daftar
+                            </a>
+                        </div>
+                    @endauth
                 </div>
             </div>
         </nav>
 
-        <!-- (Opsional) BREEZE HEADER UNTUK HALAMAN PROFIL -->
         @isset($header)
             <header class="bg-white border-b border-gray-100">
                 <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
@@ -136,20 +170,12 @@
             </header>
         @endisset
 
-        <!-- ========================================== -->
-        <!-- CONTENT WRAPPER -->
-        <!-- ========================================== -->
-        <!-- 🔥 Di sinilah isi dari dashboard.blade.php kamu dimasukkan secara otomatis -->
         <main>
-    @yield('content')
-</main>
-
-
+            @yield('content')
+        </main>
     </div>
 
-    <!-- ========================================== -->
-    <!-- FLOATING WISHLIST SIDEBAR -->
-    <!-- ========================================== -->
+    {{-- FLOATING WISHLIST --}}
     <div x-data="{ wishlistOpen: false }" 
          @click.outside="wishlistOpen = false"
          @mouseenter="if(window.innerWidth >= 768) wishlistOpen = true"
@@ -173,13 +199,15 @@
             <div class="bg-white/90 backdrop-blur-xl border border-white shadow-2xl rounded-l-2xl p-6 w-72">
                 <h3 class="font-black text-gray-800 text-base mb-2">❤️ My Favorites</h3>
                 <p class="text-xs text-gray-500 mb-4 italic leading-relaxed">Produk impianmu tersimpan aman di sini.</p>
-                
-                <a href="#" @click.prevent="alert('Fitur Wishlist sedang dalam tahap pengembangan. Ditunggu update selanjutnya ya!')" class="block text-center bg-gray-100 text-gray-500 py-3 rounded-xl text-xs font-black shadow-sm hover:scale-105 transition-all uppercase tracking-widest border border-gray-200 cursor-not-allowed">
+                <a href="#" @click.prevent="alert('Fitur Wishlist sedang dalam tahap pengembangan.')" 
+                   class="block text-center bg-gray-100 text-gray-500 py-3 rounded-xl text-xs font-black shadow-sm hover:scale-105 transition-all uppercase tracking-widest border border-gray-200 cursor-not-allowed">
                     Fitur Segera Hadir
                 </a>
             </div>
         </div>
     </div>
+
+    @stack('scripts')
 
 </body>
 </html>

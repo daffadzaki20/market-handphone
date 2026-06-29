@@ -8,7 +8,7 @@
         <h1 class="text-3xl font-black text-gray-800 tracking-tight mb-6">🎧 Aksesoris</h1>
 
         <!-- 🔍 SEARCH BAR (LIVE SEARCH) -->
-        <form method="GET" action="{{ route('aksesoris.index') }}" class="mb-6 flex gap-3" id="searchForm">
+        <form method="GET" action="{{ route('products.aksesoris') }}" class="mb-6 flex gap-3" id="searchForm">
             <div class="relative w-full">
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -29,14 +29,14 @@
 
         <!-- 🏷️ FILTER BRAND -->
         <div class="flex flex-wrap gap-2 mb-8">
-            <a href="{{ route('aksesoris.index', array_filter(['search' => request('search')])) }}"
+            <a href="{{ route('products.aksesoris', array_filter(['search' => request('search')])) }}"
                class="px-4 py-1.5 rounded-full text-sm font-medium transition-all shadow-sm
                {{ !request('brand') ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200' }}">
                 Semua Brand
             </a>
 
             @foreach ($brands as $brand)
-            <a href="{{ route('aksesoris.index', array_filter(['brand' => $brand->slug, 'search' => request('search')])) }}"
+            <a href="{{ route('products.aksesoris', array_filter(['brand' => $brand->slug, 'search' => request('search')])) }}"
                class="px-4 py-1.5 rounded-full text-sm font-medium transition-all shadow-sm
                {{ request('brand') == $brand->slug ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200' }}">
                 {{ $brand->name }}
@@ -63,7 +63,6 @@
                                      alt="{{ $product->name }}"
                                      class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                             @else
-                                <!-- Placeholder jika tidak ada gambar -->
                                 <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                             @endif
                         </div>
@@ -82,7 +81,6 @@
                                 Rp {{ number_format($product->price, 0, ',', '.') }}
                             </p>
 
-                            <!-- Deskripsi dengan batasan 2 baris (line-clamp-2) & garis pembatas -->
                             <p class="text-xs text-gray-500 mt-2 line-clamp-2 leading-relaxed border-t border-gray-100 pt-2">
                                 {{ $product->description }}
                             </p>
@@ -90,7 +88,6 @@
 
                     </a>
                 @empty
-                    <!-- Tampilan jika produk tidak ditemukan -->
                     <div class="col-span-full py-16 flex flex-col items-center justify-center text-gray-500 bg-white rounded-2xl border border-gray-200 border-dashed">
                         <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         <h3 class="text-lg font-bold text-gray-800">Aksesoris Tidak Ditemukan</h3>
@@ -107,7 +104,7 @@
 
         </div>
 
-    </div> <!-- Tutup Wrapper -->
+    </div><!-- Tutup Wrapper -->
 
     <!-- SCRIPT LIVE SEARCH (AJAX) -->
     <script>
@@ -115,13 +112,12 @@
             const searchInput = document.getElementById('searchInput');
             const productContainer = document.getElementById('productContainer');
             let typingTimer;
-            const doneTypingInterval = 500; // Jeda 0.5 detik
+            const doneTypingInterval = 500;
 
             searchInput.addEventListener('input', function () {
                 clearTimeout(typingTimer);
                 const keyword = this.value;
 
-                // Efek Loading memudar
                 productContainer.style.opacity = '0.4';
 
                 typingTimer = setTimeout(function () {
@@ -132,7 +128,6 @@
                         url.searchParams.delete('search');
                     }
 
-                    // Ambil data terbaru secara background
                     fetch(url)
                         .then(response => response.text())
                         .then(html => {
@@ -154,7 +149,6 @@
                 }, doneTypingInterval);
             });
             
-            // Mencegah form submit default dari tombol Enter
             document.getElementById('searchForm').addEventListener('submit', function(e) {
                 e.preventDefault();
             });

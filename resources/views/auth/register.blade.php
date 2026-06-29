@@ -61,6 +61,13 @@
                         </svg>
                     </button>
                 </div>
+
+                <div class="space-y-1 mt-4">
+                <div class="relative w-full">
+                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Konfirmasi Password" required
+                        class="w-full border p-3 rounded-lg focus:ring focus:ring-blue-200 outline-none transition-all pr-12">
+                </div>
+            </div>
                 @error('password') 
                     <p class="text-xs text-red-500 mt-1 font-medium">
                         {{ $message == 'validation.confirmed' ? 'Konfirmasi password tidak cocok.' : $message }}

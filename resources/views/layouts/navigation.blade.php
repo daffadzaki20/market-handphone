@@ -35,7 +35,7 @@
 
                     <x-slot name="content">
                         <!-- 🔥 PERBAIKAN: Ubah profile.edit menjadi profile -->
-                        <x-dropdown-link :href="route('profile')">
+                        <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
@@ -82,7 +82,7 @@
 
             <div class="mt-3 space-y-1">
                 <!-- 🔥 PERBAIKAN: Ubah profile.edit menjadi profile -->
-                <x-responsive-nav-link :href="route('profile')">
+                <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
 
