@@ -8,7 +8,7 @@
                 <h2 class="text-xl font-bold text-[var(--mh-text)]">Data Aksesoris</h2>
                 <p class="text-sm text-[var(--mh-muted)] mt-1">Kelola produk aksesoris untuk katalog marketplace.</p>
             </div>
-            <a href="/admin/aksesoris/create" class="inline-flex items-center justify-center px-4 py-2 rounded-lg btn-primary hover:bg-[var(--mh-primary-600)] transition">
+            <a href="<?php echo e(route('admin.aksesoris.create')); ?>" class="inline-flex items-center justify-center px-4 py-2 rounded-lg btn-primary hover:bg-[var(--mh-primary-600)] transition">
                 + Tambah Aksesoris
             </a>
         </div>
@@ -20,7 +20,7 @@
             </div>
         <?php endif; ?>
 
-        <form method="GET" action="/admin/aksesoris" class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3">
+        <form method="GET" action="<?php echo e(route('admin.aksesoris.index')); ?>" class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3">
             <input
                 type="text"
                 name="search"
@@ -71,11 +71,11 @@
                             <td class="py-3 pr-3 text-[var(--mh-muted)] max-w-xs truncate"><?php echo e($product->description ?: '-'); ?></td>
                             <td class="py-3 pr-3">
                                 <div class="flex items-center gap-2">
-                                    <a href="/admin/aksesoris/<?php echo e($product->id); ?>" class="px-3 py-1.5 rounded-md border border-[var(--mh-primary-600)] text-[var(--mh-primary)] hover:bg-[var(--mh-surface-hover)]">Detail</a>
+                                    <a href="<?php echo e(route('admin.aksesoris.show', $product->id)); ?>" class="px-3 py-1.5 rounded-md border border-[var(--mh-primary-600)] text-[var(--mh-primary)] hover:bg-[var(--mh-surface-hover)]">Detail</a>
 
-                                    <a href="/admin/aksesoris/<?php echo e($product->id); ?>/edit" class="px-3 py-1.5 rounded-md border border-[var(--mh-border)] text-[var(--mh-muted)] hover:bg-[var(--mh-surface-hover)]">Edit</a>
+                                    <a href="<?php echo e(route('admin.aksesoris.edit', $product->id)); ?>" class="px-3 py-1.5 rounded-md border border-[var(--mh-border)] text-[var(--mh-muted)] hover:bg-[var(--mh-surface-hover)]">Edit</a>
 
-                                    <form action="/admin/aksesoris/<?php echo e($product->id); ?>" method="POST" onsubmit="return confirm('Hapus produk ini?')">
+                                    <form action="<?php echo e(route('admin.aksesoris.destroy', $product->id)); ?>" method="POST" onsubmit="return confirm('Hapus produk ini?')">
                                         <?php echo csrf_field(); ?>
                                         <?php echo method_field('DELETE'); ?>
                                         <button type="submit" class="px-3 py-1.5 rounded-md border border-red-200 text-red-600 hover:bg-red-50">

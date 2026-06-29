@@ -25,7 +25,7 @@
             
             <div class="overflow-hidden">
                 <div class="font-bold text-gray-800 truncate"><?php echo e(Auth::user()->username); ?></div>
-                <a href="/profile" class="text-sm text-gray-500 flex items-center gap-1 mt-0.5 hover:text-orange-500">
+                <a href="<?php echo e(route('profile')); ?>" class="text-sm text-gray-500 flex items-center gap-1 mt-0.5 hover:text-orange-500">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                     Ubah Profil
                 </a>
@@ -43,29 +43,29 @@
                     Akun Saya
                 </div>
                 <div class="pl-7 space-y-3 mt-2">
-                    <a href="/profile" class="block text-gray-600 hover:text-orange-500 transition-colors">Profil</a>
-                    <a href="/profile/bank" class="block text-gray-600 hover:text-orange-500 transition-colors">Bank & Kartu</a>
-                    <a href="/profile/alamat" class="block text-orange-500 font-medium">Alamat</a>
-                    <a href="/profile/password" class="block text-gray-600 hover:text-orange-500 transition-colors">Ubah Password</a>
+                    <a href="<?php echo e(route('profile')); ?>" class="block text-gray-600 hover:text-orange-500 transition-colors">Profil</a>
+                    <a href="<?php echo e(route('profile.bank')); ?>" class="block text-gray-600 hover:text-orange-500 transition-colors">Bank & Kartu</a>
+                    <a href="<?php echo e(route('alamat.index')); ?>" class="block text-orange-500 font-medium">Alamat</a>
+                    <a href="<?php echo e(route('profile.password')); ?>" class="block text-gray-600 hover:text-orange-500 transition-colors">Ubah Password</a>
                 </div>
             </div> <!-- Penutup grup Akun Saya -->
 
             <!-- Menu Lainnya -->
-            <a href="/profile/pesanan" class="flex items-center gap-2 font-semibold text-gray-700 hover:text-orange-500 transition-colors">
+            <a href="<?php echo e(route('profile.orders')); ?>" class="flex items-center gap-2 font-semibold text-gray-700 hover:text-orange-500 transition-colors">
                 <span class="text-blue-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                 </span>
                 Pesanan Saya
             </a>
             
-           <a href="/profile/notifikasi" class="flex items-center gap-2 font-semibold text-gray-700 hover:text-orange-500 transition-colors">
+           <a href="<?php echo e(route('profile.notifications')); ?>" class="flex items-center gap-2 font-semibold text-gray-700 hover:text-orange-500 transition-colors">
             <span class="text-orange-500">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
             </span>
             Notifikasi
         </a>
 
-           <a href="/profile/voucher" class="flex items-center gap-2 font-semibold text-gray-700 hover:text-orange-500 transition-colors">
+           <a href="<?php echo e(route('profile.voucher')); ?>" class="flex items-center gap-2 font-semibold text-gray-700 hover:text-orange-500 transition-colors">
                 <span class="text-orange-500">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
                 </span>
@@ -77,14 +77,17 @@
             <div class="border-t border-gray-100 my-4"></div>
 
             <!-- Menu Logout di Sidebar -->
-            <a href="/logout" class="flex items-center gap-2 font-semibold text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
-                <span class="text-red-500">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                    </svg>
-                </span>
-                Keluar
-            </a>
+            <form method="POST" action="<?php echo e(route('logout')); ?>" class="flex items-center gap-2 font-semibold text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
+                <?php echo csrf_field(); ?>
+                <button type="submit" class="flex items-center gap-2 w-full text-left">
+                    <span class="text-red-500">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                        </svg>
+                    </span>
+                    Keluar
+                </button>
+            </form>
     </div>
 
     <!-- ========================================== -->
@@ -411,6 +414,15 @@
 
         marker = L.marker(defaultLokasi, { draggable: true, autoPan: true }).addTo(map);
 
+        const fillLatLngFields = (lat, lng) => {
+            const latInput = document.getElementById('latitude');
+            const lngInput = document.getElementById('longitude');
+            if (latInput) latInput.value = lat;
+            if (lngInput) lngInput.value = lng;
+        };
+
+        fillLatLngFields(defaultLokasi[0], defaultLokasi[1]);
+
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
                 const lat = position.coords.latitude;
@@ -420,15 +432,13 @@
                 map.setView(akuratLokasi, 18);
                 marker.setLatLng(akuratLokasi);
                 
-                document.getElementById('latitude').value = lat;
-                document.getElementById('longitude').value = lng;
+                fillLatLngFields(lat, lng);
             }, null, { enableHighAccuracy: true });
         }
 
         marker.on('dragend', function (event) {
             const position = marker.getLatLng();
-            document.getElementById('latitude').value = position.lat;
-            document.getElementById('longitude').value = position.lng;
+            fillLatLngFields(position.lat, position.lng);
         });
     }
 
@@ -684,7 +694,19 @@ function openModalAlamat(isEdit = false) {
             form.action = "<?php echo e(route('alamat.store')); ?>";
             document.getElementById('method-field').innerHTML = '';
             form.reset();
-            
+
+            const defaultLat = -6.200000;
+            const defaultLng = 106.816666;
+            const latInput = document.getElementById('latitude');
+            const lngInput = document.getElementById('longitude');
+            if (latInput) latInput.value = defaultLat;
+            if (lngInput) lngInput.value = defaultLng;
+
+            if (map && marker) {
+                map.setView([defaultLat, defaultLng], 15);
+                marker.setLatLng([defaultLat, defaultLng]);
+            }
+
             ['kabupaten', 'kecamatan', 'desa'].forEach(id => {
                 document.getElementById(id).disabled = true;
                 document.getElementById(id).innerHTML = `<option value="" disabled selected>Pilih...</option>`;
@@ -706,4 +728,4 @@ function openModalAlamat(isEdit = false) {
 </script>
 
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\XampUtama\htdocs\handphone\resources\views/profile/alamat.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\XampUtama\htdocs\handphone\resources\views/user/profile/alamat.blade.php ENDPATH**/ ?>

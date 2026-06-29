@@ -8,7 +8,7 @@
             <p class="text-sm text-[var(--mh-muted)] mt-1">Perbarui data produk handphone yang dipilih.</p>
         </div>
 
-        <form action="/admin/handphones/<?php echo e($product->id); ?>" method="POST" enctype="multipart/form-data" class="space-y-5">
+        <form action="<?php echo e(route('admin.handphones.update', $product->id)); ?>" method="POST" enctype="multipart/form-data" class="space-y-5">
             <?php echo csrf_field(); ?>
             <?php echo method_field('PUT'); ?>
 
@@ -19,7 +19,7 @@
 
             <div class="flex items-center gap-3 pt-2">
                 <button type="submit" class="px-4 py-2 rounded-lg btn-primary hover:bg-[var(--mh-primary-600)] transition">Update</button>
-                <a href="/admin/handphones" class="px-4 py-2 rounded-lg border border-[var(--mh-border)] text-[var(--mh-muted)] hover:bg-[var(--mh-surface-hover)] transition">Batal</a>
+                <a href="<?php echo e(route('admin.handphones.index')); ?>" class="px-4 py-2 rounded-lg border border-[var(--mh-border)] text-[var(--mh-muted)] hover:bg-[var(--mh-surface-hover)] transition">Batal</a>
             </div>
         </form>
     </section>
