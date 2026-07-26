@@ -191,7 +191,7 @@
                         </p>
                     </div>
 
-                    <a href="{{ route('handphone.index') }}"
+                    <a href="{{ route('admin.handphones.index') }}"
                        class="inline-flex items-center gap-2 text-xs font-bold text-indigo-600 hover:bg-indigo-50 px-4 py-2 rounded-lg transition">
 
                         Lihat Semua

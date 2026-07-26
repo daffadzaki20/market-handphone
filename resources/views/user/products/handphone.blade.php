@@ -54,11 +54,19 @@
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 relative">
 
                 @forelse ($products as $product)
-                    <a href="{{ route('product.show', $product->id) }}"
-                       class="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 overflow-hidden group flex flex-col">
+                    <div class="relative bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 overflow-hidden group flex flex-col">
+                        
+                        <!-- WISHLIST BUTTON -->
+                        @php
+                            $inWishlist = Auth::check() && \App\Models\Wishlist::where('user_id', Auth::id())->where('product_id', $product->id)->exists();
+                        @endphp
+                        <button onclick="toggleWishlistApp({{ $product->id }}, this)" class="absolute top-3 right-3 z-20 bg-white/80 backdrop-blur-sm hover:bg-red-50 p-2 rounded-full transition-colors shadow-sm" title="Wishlist">
+                            <svg class="w-5 h-5 {{ $inWishlist ? 'fill-red-500 text-red-500' : 'text-gray-400 fill-transparent' }} transition-colors" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        </button>
 
-                        <!-- IMAGE -->
-                        <div class="h-48 bg-gray-50 flex items-center justify-center overflow-hidden relative">
+                        <a href="{{ route('product.show', $product->id) }}" class="flex flex-col flex-grow relative z-10">
+                            <!-- IMAGE -->
+                            <div class="h-48 bg-gray-50 flex items-center justify-center overflow-hidden relative">
                             @if(isset($product->image) && $product->image)
                                 <img src="{{ $product->image_url }}"
                                      alt="{{ $product->name }}"
@@ -87,7 +95,8 @@
                                 <span>Stok: {{ $product->stock ?? 0 }}</span>
                             </div>
                         </div>
-                    </a>
+                        </a>
+                    </div>
                 @empty
                     <div class="col-span-full py-16 flex flex-col items-center justify-center text-gray-500 bg-white rounded-2xl border border-gray-200 border-dashed">
                         <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>

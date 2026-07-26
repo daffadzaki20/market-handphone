@@ -46,7 +46,7 @@
     </div>
 
     <div class="flex justify-center gap-3">
-        <a href="{{ route('handphone.index') }}" 
+        <a href="{{ route('products.handphone') }}" 
            class="bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition">
            Kembali ke Beranda
         </a>

@@ -5,42 +5,38 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Brand;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 
 class ProductController extends Controller
 {
     public function handphoneIndex()
     {
-        // Pake query() biar enak chaining-nya
         $query = Product::with('brand')->whereHas('brand', function ($b) {
             $b->where('type', 'hp');
         });
 
-    if ($search = request('search')) {
-        // Bungkus OR di dalam fungsi biar gak ngerusak 'type = hp'
-        $query->where(function ($q) use ($search) {
-            $q->where('name', 'like', '%' . $search . '%')
-              ->orWhereHas('brand', function ($brandQuery) use ($search) {
-                  $brandQuery->where('name', 'like', '%' . $search . '%');
-              });
-        });
+        if ($search = request('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhereHas('brand', function ($brandQuery) use ($search) {
+                      $brandQuery->where('name', 'like', '%' . $search . '%');
+                  });
+            });
+        }
+
+        if ($brandSlug = request('brand')) {
+            $query->whereHas('brand', function ($q) use ($brandSlug) {
+                $q->where('slug', $brandSlug);
+            });
+        }
+
+        $products = $query->latest()->paginate(12)->withQueryString();
+        $brands = Brand::where('type', 'hp')->orderBy('name', 'asc')->get();
+
+        return view('user.products.handphone', compact('products', 'brands'));
     }
-
-    // Filter brand: Gue saranin pake slug/nama biar URL-nya cakep (SEO friendly)
-    if ($brandSlug = request('brand')) {
-        $query->whereHas('brand', function ($q) use ($brandSlug) {
-            $q->where('slug', $brandSlug);
-        });
-    }
-
-    $products = $query->latest()->paginate(12)->withQueryString();
-    $brands = Brand::where('type', 'hp')
-        ->orderBy('name', 'asc')
-        ->get();
-
-    return view('user.products.handphone', compact('products', 'brands'));
-}
 
     public function aksesorisIndex()
     {
@@ -64,9 +60,7 @@ class ProductController extends Controller
         }
 
         $products = $query->latest()->paginate(12)->withQueryString();
-        $brands = Brand::where('type', 'aksesoris')
-            ->orderBy('name', 'asc')
-            ->get();
+        $brands = Brand::where('type', 'aksesoris')->orderBy('name', 'asc')->get();
 
         return view('user.products.aksesoris', compact('products', 'brands'));
     }
@@ -79,17 +73,12 @@ class ProductController extends Controller
         return view('user.products.detail', compact('product', 'brandType'));
     }
 
-    private function ensureAdmin()
-    {
-        if (!Auth::check() || Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak. Hanya admin yang dapat mengakses halaman ini.');
-        }
-    }
+    // =========================================================================
+    // HANDPHONES ADMIN
+    // =========================================================================
 
     public function adminHandphoneIndex()
     {
-        $this->ensureAdmin();
-
         $query = Product::with('brand')->whereHas('brand', function ($b) {
             $b->where('type', 'hp');
         })->latest();
@@ -110,35 +99,15 @@ class ProductController extends Controller
 
     public function adminHandphoneCreate()
     {
-        $this->ensureAdmin();
-
         $brands = Brand::where('type', 'hp')->orderBy('name', 'asc')->get();
         return view('admin.handphones.create', compact('brands'));
     }
 
-    public function adminHandphoneStore(Request $request)
+    public function adminHandphoneStore(StoreProductRequest $request)
     {
-        $this->ensureAdmin();
-
-        $validated = $request->validate([
-            'brand_id' => ['required', 'exists:brands,id'],
-            'name' => ['required', 'string', 'max:255'],
-            'price' => ['required', 'integer', 'min:0'],
-            'stock' => ['required', 'integer', 'min:0'],
-            'ram' => ['nullable', 'string', 'max:100'],
-            'storage' => ['nullable', 'string', 'max:100'],
-            'battery' => ['nullable', 'string', 'max:100'],
-            'description' => ['nullable', 'string'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-        ]);
-
-        $imageName = null;
-        if ($request->hasFile('image')) {
-            $imageName = $request->file('image')->store('products', 'public');
-        }
-
-        // Pastikan brand yang dipilih memang tipe 'hp'
+        $validated = $request->validated();
         $brand = Brand::find($validated['brand_id']);
+        
         if (!$brand || ($brand->type ?? '') !== 'hp') {
             return back()->withErrors(['brand_id' => 'Brand yang dipilih bukan kategori Handphone.'])->withInput();
         }
@@ -148,7 +117,7 @@ class ProductController extends Controller
             'name' => $validated['name'],
             'price' => $validated['price'],
             'stock' => $validated['stock'],
-            'image' => $imageName,
+            'image' => $this->handleImageUpload($request),
             'description' => $validated['description'] ?? null,
             'ram' => $validated['ram'] ?? null,
             'storage' => $validated['storage'] ?? null,
@@ -160,11 +129,10 @@ class ProductController extends Controller
 
     public function adminHandphoneEdit(int $id)
     {
-        $this->ensureAdmin();
-
         $product = Product::query()->whereHas('brand', function ($b) {
             $b->where('type', 'hp');
         })->findOrFail($id);
+        
         $brands = Brand::where('type', 'hp')->orderBy('name', 'asc')->get();
 
         return view('admin.handphones.edit', compact('product', 'brands'));
@@ -172,8 +140,6 @@ class ProductController extends Controller
 
     public function adminHandphoneShow(int $id)
     {
-        $this->ensureAdmin();
-
         $product = Product::with('brand')->whereHas('brand', function ($b) {
             $b->where('type', 'hp');
         })->findOrFail($id);
@@ -181,33 +147,15 @@ class ProductController extends Controller
         return view('admin.handphones.show', compact('product'));
     }
 
-    public function adminHandphoneUpdate(Request $request, int $id)
+    public function adminHandphoneUpdate(UpdateProductRequest $request, int $id)
     {
-        $this->ensureAdmin();
-
         $product = Product::query()->whereHas('brand', function ($b) {
             $b->where('type', 'hp');
         })->findOrFail($id);
 
-        $validated = $request->validate([
-            'brand_id' => ['required', 'exists:brands,id'],
-            'name' => ['required', 'string', 'max:255'],
-            'price' => ['required', 'integer', 'min:0'],
-            'stock' => ['required', 'integer', 'min:0'],
-            'ram' => ['nullable', 'string', 'max:100'],
-            'storage' => ['nullable', 'string', 'max:100'],
-            'battery' => ['nullable', 'string', 'max:100'],
-            'description' => ['nullable', 'string'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-        ]);
-
-        $imageName = $product->image;
-        if ($request->hasFile('image')) {
-            $imageName = $request->file('image')->store('products', 'public');
-        }
-
-        // Pastikan brand yang dipilih memang tipe 'hp'
+        $validated = $request->validated();
         $brand = Brand::find($validated['brand_id']);
+
         if (!$brand || ($brand->type ?? '') !== 'hp') {
             return back()->withErrors(['brand_id' => 'Brand yang dipilih bukan kategori Handphone.'])->withInput();
         }
@@ -217,7 +165,7 @@ class ProductController extends Controller
             'name' => $validated['name'],
             'price' => $validated['price'],
             'stock' => $validated['stock'],
-            'image' => $imageName,
+            'image' => $this->handleImageUpload($request, $product->image),
             'description' => $validated['description'] ?? null,
             'ram' => $validated['ram'] ?? null,
             'storage' => $validated['storage'] ?? null,
@@ -229,8 +177,6 @@ class ProductController extends Controller
 
     public function adminHandphoneDestroy(int $id)
     {
-        $this->ensureAdmin();
-
         Product::query()
             ->whereHas('brand', function ($b) {
                 $b->where('type', 'hp');
@@ -242,10 +188,12 @@ class ProductController extends Controller
         return redirect('/admin/handphones')->with('success', 'Produk handphone berhasil dihapus.');
     }
 
+    // =========================================================================
+    // AKSESORIS ADMIN
+    // =========================================================================
+
     public function adminAksesorisIndex()
     {
-        $this->ensureAdmin();
-
         $query = Product::with('brand')->whereHas('brand', function ($b) {
             $b->where('type', 'aksesoris');
         })->latest();
@@ -266,32 +214,15 @@ class ProductController extends Controller
 
     public function adminAksesorisCreate()
     {
-        $this->ensureAdmin();
-
         $brands = Brand::where('type', 'aksesoris')->orderBy('name', 'asc')->get();
         return view('admin.aksesoris.create', compact('brands'));
     }
 
-    public function adminAksesorisStore(Request $request)
+    public function adminAksesorisStore(StoreProductRequest $request)
     {
-        $this->ensureAdmin();
-
-        $validated = $request->validate([
-            'brand_id' => ['required', 'exists:brands,id'],
-            'name' => ['required', 'string', 'max:255'],
-            'price' => ['required', 'integer', 'min:0'],
-            'stock' => ['required', 'integer', 'min:0'],
-            'description' => ['nullable', 'string'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-        ]);
-
-        $imageName = null;
-        if ($request->hasFile('image')) {
-            $imageName = $request->file('image')->store('products', 'public');
-        }
-
-        // Pastikan brand yang dipilih memang tipe 'aksesoris'
+        $validated = $request->validated();
         $brand = Brand::find($validated['brand_id']);
+
         if (!$brand || ($brand->type ?? '') !== 'aksesoris') {
             return back()->withErrors(['brand_id' => 'Brand yang dipilih bukan kategori Aksesoris.'])->withInput();
         }
@@ -301,7 +232,7 @@ class ProductController extends Controller
             'name' => $validated['name'],
             'price' => $validated['price'],
             'stock' => $validated['stock'],
-            'image' => $imageName,
+            'image' => $this->handleImageUpload($request),
             'description' => $validated['description'] ?? null,
             'ram' => null,
             'storage' => null,
@@ -313,11 +244,10 @@ class ProductController extends Controller
 
     public function adminAksesorisEdit(int $id)
     {
-        $this->ensureAdmin();
-
         $product = Product::query()->whereHas('brand', function ($b) {
             $b->where('type', 'aksesoris');
         })->findOrFail($id);
+        
         $brands = Brand::where('type', 'aksesoris')->orderBy('name', 'asc')->get();
 
         return view('admin.aksesoris.edit', compact('product', 'brands'));
@@ -325,8 +255,6 @@ class ProductController extends Controller
 
     public function adminAksesorisShow(int $id)
     {
-        $this->ensureAdmin();
-
         $product = Product::with('brand')->whereHas('brand', function ($b) {
             $b->where('type', 'aksesoris');
         })->findOrFail($id);
@@ -334,30 +262,15 @@ class ProductController extends Controller
         return view('admin.aksesoris.show', compact('product'));
     }
 
-    public function adminAksesorisUpdate(Request $request, int $id)
+    public function adminAksesorisUpdate(UpdateProductRequest $request, int $id)
     {
-        $this->ensureAdmin();
-
         $product = Product::query()->whereHas('brand', function ($b) {
             $b->where('type', 'aksesoris');
         })->findOrFail($id);
 
-        $validated = $request->validate([
-            'brand_id' => ['required', 'exists:brands,id'],
-            'name' => ['required', 'string', 'max:255'],
-            'price' => ['required', 'integer', 'min:0'],
-            'stock' => ['required', 'integer', 'min:0'],
-            'description' => ['nullable', 'string'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-        ]);
-
-        $imageName = $product->image;
-        if ($request->hasFile('image')) {
-            $imageName = $request->file('image')->store('products', 'public');
-        }
-
-        // Pastikan brand yang dipilih memang tipe 'aksesoris'
+        $validated = $request->validated();
         $brand = Brand::find($validated['brand_id']);
+
         if (!$brand || ($brand->type ?? '') !== 'aksesoris') {
             return back()->withErrors(['brand_id' => 'Brand yang dipilih bukan kategori Aksesoris.'])->withInput();
         }
@@ -367,7 +280,7 @@ class ProductController extends Controller
             'name' => $validated['name'],
             'price' => $validated['price'],
             'stock' => $validated['stock'],
-            'image' => $imageName,
+            'image' => $this->handleImageUpload($request, $product->image),
             'description' => $validated['description'] ?? null,
             'ram' => null,
             'storage' => null,
@@ -379,8 +292,6 @@ class ProductController extends Controller
 
     public function adminAksesorisDestroy(int $id)
     {
-        $this->ensureAdmin();
-
         Product::query()
             ->whereHas('brand', function ($b) {
                 $b->where('type', 'aksesoris');
@@ -390,5 +301,16 @@ class ProductController extends Controller
             ->forceDelete();
 
         return redirect('/admin/aksesoris')->with('success', 'Produk aksesoris berhasil dihapus.');
+    }
+
+    /**
+     * Handle Image Upload helper method
+     */
+    private function handleImageUpload(Request $request, $existingImage = null)
+    {
+        if ($request->hasFile('image')) {
+            return $request->file('image')->store('products', 'public');
+        }
+        return $existingImage;
     }
 }

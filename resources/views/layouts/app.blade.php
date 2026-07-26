@@ -176,6 +176,11 @@
     </div>
 
     {{-- FLOATING WISHLIST --}}
+    @auth
+    @php
+        $wishlistItems = \App\Models\Wishlist::with('product')->where('user_id', Auth::id())->latest()->take(3)->get();
+        $wishlistCount = \App\Models\Wishlist::where('user_id', Auth::id())->count();
+    @endphp
     <div x-data="{ wishlistOpen: false }" 
          @click.outside="wishlistOpen = false"
          @mouseenter="if(window.innerWidth >= 768) wishlistOpen = true"
@@ -190,7 +195,7 @@
                 <svg class="w-8 h-8 text-red-500 fill-current animate-pulse" viewBox="0 0 24 24">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
-                <span class="absolute -top-3 -right-3 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full border-2 border-white shadow-sm">0</span>
+                <span id="wishlist-count" class="absolute -top-3 -right-3 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full border-2 border-white shadow-sm">{{ $wishlistCount }}</span>
             </div>
         </div>
         
@@ -198,14 +203,86 @@
              :class="wishlistOpen ? 'max-w-xs opacity-100 visible' : 'max-w-0 opacity-0 invisible'">
             <div class="bg-white/90 backdrop-blur-xl border border-white shadow-2xl rounded-l-2xl p-6 w-72">
                 <h3 class="font-black text-gray-800 text-base mb-2">❤️ My Favorites</h3>
-                <p class="text-xs text-gray-500 mb-4 italic leading-relaxed">Produk impianmu tersimpan aman di sini.</p>
-                <a href="#" @click.prevent="alert('Fitur Wishlist sedang dalam tahap pengembangan.')" 
-                   class="block text-center bg-gray-100 text-gray-500 py-3 rounded-xl text-xs font-black shadow-sm hover:scale-105 transition-all uppercase tracking-widest border border-gray-200 cursor-not-allowed">
-                    Fitur Segera Hadir
+                
+                <div id="wishlist-preview-container" class="space-y-3 mb-4 max-h-60 overflow-y-auto">
+                    @forelse($wishlistItems as $item)
+                        <a href="{{ route('product.show', $item->product_id) }}" class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors border border-transparent hover:border-gray-100">
+                            <img src="{{ $item->product->image_url ?? asset('images/products/default.jpg') }}" alt="{{ $item->product->name }}" class="w-12 h-12 object-contain bg-white rounded-md border border-gray-100 p-1">
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-xs font-bold text-gray-800 truncate">{{ $item->product->name }}</h4>
+                                <p class="text-orange-500 font-bold text-xs">Rp {{ number_format($item->product->price, 0, ',', '.') }}</p>
+                            </div>
+                        </a>
+                    @empty
+                        <p class="text-xs text-gray-500 italic leading-relaxed text-center py-4" id="empty-wishlist-msg">Belum ada produk favorit.</p>
+                    @endforelse
+                </div>
+
+                <a href="{{ route('wishlist.index') }}" 
+                   class="block text-center bg-orange-500 text-white py-3 rounded-xl text-xs font-black shadow-sm hover:scale-105 transition-all uppercase tracking-widest border border-orange-600">
+                    Lihat Semua
                 </a>
             </div>
         </div>
     </div>
+    @endauth
+
+    <script>
+        function toggleWishlistApp(productId, btnElement) {
+            fetch(`{{ url('/wishlist/toggle') }}/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'unauthorized') {
+                    window.location.href = '/login';
+                    return;
+                }
+                
+                // Update heart icon styling on the button
+                if (btnElement) {
+                    const icon = btnElement.querySelector('svg');
+                    if (data.status === 'added') {
+                        icon.classList.add('fill-red-500', 'text-red-500');
+                        icon.classList.remove('text-gray-400', 'fill-transparent');
+                    } else {
+                        icon.classList.remove('fill-red-500', 'text-red-500');
+                        icon.classList.add('text-gray-400', 'fill-transparent');
+                    }
+                }
+
+                // Update floating widget
+                const countBadge = document.getElementById('wishlist-count');
+                if (countBadge) countBadge.innerText = data.count;
+
+                const container = document.getElementById('wishlist-preview-container');
+                if (container && data.latest) {
+                    let html = '';
+                    if (data.latest.length === 0) {
+                        html = '<p class="text-xs text-gray-500 italic leading-relaxed text-center py-4" id="empty-wishlist-msg">Belum ada produk favorit.</p>';
+                    } else {
+                        data.latest.forEach(item => {
+                            html += `
+                            <a href="${item.product_url}" class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors border border-transparent hover:border-gray-100">
+                                <img src="${item.product_image}" alt="${item.product_name}" class="w-12 h-12 object-contain bg-white rounded-md border border-gray-100 p-1">
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-xs font-bold text-gray-800 truncate">${item.product_name}</h4>
+                                    <p class="text-orange-500 font-bold text-xs">Rp ${item.product_price}</p>
+                                </div>
+                            </a>`;
+                        });
+                    }
+                    container.innerHTML = html;
+                }
+            })
+            .catch(err => console.error(err));
+        }
+    </script>
 
     @stack('scripts')
 

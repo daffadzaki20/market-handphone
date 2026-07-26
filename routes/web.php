@@ -86,6 +86,14 @@ Route::middleware('auth')->group(function () {
     });
 
     // ------------------------------------------------------------------
+    // WISHLIST
+    // ------------------------------------------------------------------
+    Route::prefix('wishlist')->name('wishlist.')->group(function () {
+        Route::get('/',               [\App\Http\Controllers\WishlistController::class, 'index'])->name('index');
+        Route::post('/toggle/{id}',   [\App\Http\Controllers\WishlistController::class, 'toggle'])->name('toggle');
+    });
+
+    // ------------------------------------------------------------------
     // CHECKOUT & ORDER (USER)
     // ------------------------------------------------------------------
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');

@@ -4,53 +4,39 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Order;
+use App\Services\OrderCheckoutService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+    /**
+     * @var OrderCheckoutService
+     */
+    protected $checkoutService;
+
+    public function __construct(OrderCheckoutService $checkoutService)
+    {
+        $this->checkoutService = $checkoutService;
+    }
+
     // Proses checkout dari keranjang
     public function process(Request $request)
     {
-        $cartItems = Cart::where('user_id', Auth::id())
-                         ->whereIn('id', $request->cart_ids)
-                         ->get();
-
-        if ($cartItems->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Keranjang kosong.');
-        }
-
-       $subtotal = $cartItems->sum(fn($item) => $item->product->price * $item->quantity);
-
-        $ongkir = (int) ($request->pengiriman ?? 15000);
-
-        $proteksi = ($request->proteksi ?? 0) == 1 ? 45000 : 0;
-
-        $biayaLayanan = 1000; // sesuaikan dengan checkout
-
-        $diskonVoucher = ($request->voucher ?? '') == 'DISKON50' ? 50000 : 0;
-
-        $total = $subtotal
-                + $ongkir
-                + $proteksi
-                + $biayaLayanan
-                - $diskonVoucher;
-
-        $order = Order::create([
-            'user_id' => Auth::id(),
-            'total'   => $total,
-            'status'  => 'diproses',
+        $request->validate([
+            'cart_ids' => 'required|array',
+            'cart_ids.*' => 'exists:carts,id',
         ]);
 
-        foreach ($cartItems as $item) {
-            $order->items()->create([
-                'product_id' => $item->product_id,
-                'quantity'   => $item->quantity,
-                'price'      => $item->product->price,
-            ]);
-        }
+        $order = $this->checkoutService->processCheckout(
+            Auth::id(),
+            $request->cart_ids,
+            $request->only(['pengiriman', 'proteksi', 'voucher'])
+        );
 
-        Cart::whereIn('id', $request->cart_ids)->delete();
+        if (!$order) {
+            return redirect()->route('cart.index')->with('error', 'Keranjang kosong atau item tidak ditemukan.');
+        }
 
         // Redirect ke halaman sukses
         return redirect()->route('order.success', $order->id);

@@ -52,7 +52,7 @@
             </div>
             
             {{-- Form pembatalan baru yang kita buat --}}
-            <form action="{{ route('user.orders.cancel', $order->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')">
+            <form action="{{ route('orders.cancel', $order->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')">
                 @csrf
                 @method('PUT')
                 <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-5 rounded-xl shadow-md transition-all active:scale-95 text-xs uppercase tracking-wider">
