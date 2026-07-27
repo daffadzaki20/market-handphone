@@ -72,13 +72,58 @@ class ProfileController extends Controller
         return view('user.profile.password');
     }
 
-    public function orders()
+   public function orders(Request $request)
     {
-        $orders = Auth::user()->orders()->with('items.product')->latest()->get();
+        $statusTab = $request->query('status'); 
 
-        return view('user.profile.pesanan', compact('orders'));
+        $user = Auth::user();
+
+        // Hitung jumlah pesanan untuk masing-masing tab
+        $countSemua     = $user->orders()->count();
+        $countBelum     = $user->orders()->where('status', 'belum_bayar')->count();
+        $countDikemas   = $user->orders()->where('status', 'diproses')->count();
+        $countDikirim   = $user->orders()->where('status', 'dikirim')->count();
+        $countSelesai   = $user->orders()->where('status', 'selesai')->count();
+        $countBatal     = $user->orders()->where('status', 'dibatalkan')->count();
+
+        // Query data pesanan sesuai tab yang aktif
+        $query = $user->orders()->with('items.product')->latest();
+
+        if ($statusTab) {
+            if ($statusTab === 'dikemas') {
+                $query->where('status', 'diproses');
+            } else {
+                $query->where('status', $statusTab);
+            }
+        }
+
+        $orders = $query->get();
+
+        return view('user.profile.pesanan', compact(
+            'orders', 
+            'countSemua', 
+            'countBelum', 
+            'countDikemas', 
+            'countDikirim', 
+            'countSelesai', 
+            'countBatal'
+        ));
     }
 
+    public function notifications()
+    {
+        $user = Auth::user();
+
+        // 1. Ambil pesanan user untuk dijadikan notifikasi status pesanan
+        $orders = $user->orders()->with('items.product')->latest()->take(5)->get();
+
+        // 2. Ambil voucher terbaru dari database
+        $vouchers = \App\Models\Voucher::latest()->take(5)->get();
+
+        // UBAH 'notifications' MENJADI 'notifikasi' DI SINI 👇
+        return view('user.profile.notifikasi', compact('orders', 'vouchers'));
+    }
+    
     public function updatePassword(Request $request): RedirectResponse
     {
         $request->validate([

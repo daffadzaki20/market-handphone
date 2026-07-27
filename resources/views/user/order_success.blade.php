@@ -1,56 +1,34 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-2xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-8 text-center">
-    <!-- Ikon check -->
-    <div class="flex justify-center mb-4">
-        <div class="bg-green-100 text-green-600 rounded-full p-4">
-            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+<div class="min-h-[60vh] flex items-center justify-center px-4 py-12">
+    <div class="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-gray-100 text-center max-w-lg w-full relative overflow-hidden">
+        
+        <!-- Hiasan Background -->
+        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 to-orange-500"></div>
+
+        <!-- Ikon Sukses Animasi -->
+        <div class="w-24 h-24 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <svg class="w-12 h-12 animate-[bounce_1s_ease-in-out_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
             </svg>
         </div>
-    </div>
-
-    <h2 class="text-2xl font-bold text-green-600 mb-2">Pesanan Berhasil!</h2>
-    <p class="text-gray-600 mb-6">Terima kasih, pesanan kamu sedang diproses.</p>
-
-    <!-- Progress bar tracking -->
-    <div class="flex items-center justify-between mb-8">
-        <div class="flex-1">
-            <div class="flex justify-between mb-2 text-sm font-medium text-gray-600">
-                <span>Pesanan Diterima</span>
-                <span>Diproses</span>
-                <span>Dikirim</span>
-                <span>Selesai</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
-                <div class="bg-green-500 h-2 rounded-full" style="width: 50%"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-gray-50 rounded-lg p-4 mb-6 text-left">
-        <h4 class="text-lg font-semibold text-gray-800 mb-3">Detail Pesanan:</h4>
-        <ul class="divide-y divide-gray-200 mb-4">
-            @foreach($order->items as $item)
-                <li class="py-2 flex justify-between">
-                    <span class="font-medium text-gray-700">{{ $item->product->name }}</span>
-                    <span class="text-gray-500">x {{ $item->quantity }}</span>
-                </li>
-            @endforeach
-        </ul>
-        <p class="text-gray-700"><span class="font-semibold">Total:</span> Rp {{ number_format($order->total, 0, ',', '.') }}</p>
-        <p class="text-gray-700"><span class="font-semibold">Status:</span> 
-            <span class="bg-green-100 text-green-600 px-2 py-0.5 rounded">{{ $order->status }}</span>
-        </p>
-    </div>
-
-    <div class="flex justify-center gap-3">
-        <a href="{{ route('handphone.index') }}" 
-           class="bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition">
-           Kembali ke Beranda
-        </a>
         
+        <h1 class="text-2xl md:text-3xl font-black text-gray-800 mb-3">Pembayaran Berhasil!</h1>
+        <p class="text-gray-500 text-sm md:text-base leading-relaxed mb-10">
+            Hore! Pesanan Anda telah berhasil dibuat dan pembayaran telah diterima. Mohon pantau selalu perjalanan paket Anda melalui menu pesanan.
+        </p>
+        
+        <!-- Tombol Aksi -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="{{ route('profile.orders') }}" class="w-full sm:w-1/2 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 px-6 rounded-xl transition shadow-lg shadow-orange-200 flex items-center justify-center gap-2">
+                Ok
+            </a>
+            <a href="{{ url('/') }}" class="w-full sm:w-1/2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 font-bold py-3.5 px-6 rounded-xl transition shadow-sm flex items-center justify-center gap-2">
+                Lanjut Belanja
+            </a>
+        </div>
+
     </div>
 </div>
 @endsection

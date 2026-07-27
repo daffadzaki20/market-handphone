@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Brand;
+use App\Models\Wishlist;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,30 +18,35 @@ class ProductController extends Controller
             $b->where('type', 'hp');
         });
 
-    if ($search = request('search')) {
-        // Bungkus OR di dalam fungsi biar gak ngerusak 'type = hp'
-        $query->where(function ($q) use ($search) {
-            $q->where('name', 'like', '%' . $search . '%')
-              ->orWhereHas('brand', function ($brandQuery) use ($search) {
-                  $brandQuery->where('name', 'like', '%' . $search . '%');
-              });
-        });
+        if ($search = request('search')) {
+            // Bungkus OR di dalam fungsi biar gak ngerusak 'type = hp'
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhereHas('brand', function ($brandQuery) use ($search) {
+                      $brandQuery->where('name', 'like', '%' . $search . '%');
+                  });
+            });
+        }
+
+        // Filter brand: Gue saranin pake slug/nama biar URL-nya cakep (SEO friendly)
+        if ($brandSlug = request('brand')) {
+            $query->whereHas('brand', function ($q) use ($brandSlug) {
+                $q->where('slug', $brandSlug);
+            });
+        }
+
+        $products = $query->latest()->paginate(12)->withQueryString();
+        $brands = Brand::where('type', 'hp')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        // Ambil daftar product_id yang sudah di-wishlist oleh user yang login
+        $wishlistIds = Auth::check()
+            ? Wishlist::where('user_id', Auth::id())->pluck('product_id')->toArray()
+            : [];
+
+        return view('user.products.handphone', compact('products', 'brands', 'wishlistIds'));
     }
-
-    // Filter brand: Gue saranin pake slug/nama biar URL-nya cakep (SEO friendly)
-    if ($brandSlug = request('brand')) {
-        $query->whereHas('brand', function ($q) use ($brandSlug) {
-            $q->where('slug', $brandSlug);
-        });
-    }
-
-    $products = $query->latest()->paginate(12)->withQueryString();
-    $brands = Brand::where('type', 'hp')
-        ->orderBy('name', 'asc')
-        ->get();
-
-    return view('user.products.handphone', compact('products', 'brands'));
-}
 
     public function aksesorisIndex()
     {
@@ -68,7 +74,12 @@ class ProductController extends Controller
             ->orderBy('name', 'asc')
             ->get();
 
-        return view('user.products.aksesoris', compact('products', 'brands'));
+        // Ambil daftar product_id yang sudah di-wishlist oleh user yang login
+        $wishlistIds = Auth::check()
+            ? Wishlist::where('user_id', Auth::id())->pluck('product_id')->toArray()
+            : [];
+
+        return view('user.products.aksesoris', compact('products', 'brands', 'wishlistIds'));
     }
 
     public function show(int $id)
@@ -76,7 +87,25 @@ class ProductController extends Controller
         $product = Product::with('brand')->findOrFail($id);
         $brandType = $product->brand?->type ?? null;
 
-        return view('user.products.detail', compact('product', 'brandType'));
+        // Mengambil 5 produk acak dengan tipe kategori yang sama
+        $relatedProducts = Product::with('brand')
+            ->where('id', '!=', $id) // Kecualikan produk yang sedang dilihat
+            ->whereHas('brand', function ($q) use ($brandType) {
+                if ($brandType) {
+                    $q->where('type', $brandType);
+                }
+            })
+            ->inRandomOrder()
+            ->take(5)
+            ->get();
+
+        // Ambil daftar product_id yang sudah di-wishlist oleh user yang login
+        $wishlistIds = Auth::check()
+            ? Wishlist::where('user_id', Auth::id())->pluck('product_id')->toArray()
+            : [];
+
+        // Pastikan variabel $wishlistIds ikut dikirim ke view
+        return view('user.products.detail', compact('product', 'brandType', 'relatedProducts', 'wishlistIds'));
     }
 
     private function ensureAdmin()

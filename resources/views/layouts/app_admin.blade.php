@@ -26,7 +26,7 @@
 
     {{-- SIDEBAR --}}
     <aside class="fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-blue-100 shadow-2xl flex flex-col transition-transform duration-300 ease-in-out md:relative md:translate-x-0"
-           :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
 
         {{-- LOGO --}}
         <div class="p-6 border-b border-blue-100 bg-gradient-to-r from-blue-500 to-cyan-400 flex justify-between items-center">
@@ -47,28 +47,60 @@
         {{-- NAVIGATION --}}
         <nav class="flex-1 p-5 space-y-3 bg-white overflow-y-auto">
             {{-- DASHBOARD --}}
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 {{ request()->is('admin') ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white shadow-lg scale-[1.02]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md' }}">
-                <span class="text-xl">📊</span><span class="font-semibold">Dashboard</span>
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center justify-between px-5 py-4 rounded-2xl transition-all duration-300 {{ request()->is('admin') ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white shadow-lg scale-[1.02]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md' }}">
+                <div class="flex items-center gap-4">
+                    <span class="text-xl">📊</span><span class="font-semibold">Dashboard</span>
+                </div>
             </a>
 
             {{-- HANDPHONE --}}
-            <a href="{{ route('admin.handphones.index') }}" class="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 {{ request()->is('admin/handphones*') ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white shadow-lg scale-[1.02]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md' }}">
-                <span class="text-xl">📱</span><span class="font-semibold">Handphone</span>
+            <a href="{{ route('admin.handphones.index') }}" class="flex items-center justify-between px-5 py-4 rounded-2xl transition-all duration-300 {{ request()->is('admin/handphones*') ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white shadow-lg scale-[1.02]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md' }}">
+                <div class="flex items-center gap-4">
+                    <span class="text-xl">📱</span><span class="font-semibold">Handphone</span>
+                </div>
+                @if(isset($lowStockHandphone) && $lowStockHandphone > 0)
+                    <span class="px-2.5 py-0.5 text-xs font-bold bg-red-500 text-white rounded-full animate-pulse">{{ $lowStockHandphone }}</span>
+                @endif
             </a>
 
             {{-- AKSESORIS --}}
-            <a href="{{ route('admin.aksesoris.index') }}" class="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 {{ request()->is('admin/aksesoris*') ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white shadow-lg scale-[1.02]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md' }}">
-                <span class="text-xl">🎧</span><span class="font-semibold">Aksesoris</span>
+            <a href="{{ route('admin.aksesoris.index') }}" class="flex items-center justify-between px-5 py-4 rounded-2xl transition-all duration-300 {{ request()->is('admin/aksesoris*') ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white shadow-lg scale-[1.02]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md' }}">
+                <div class="flex items-center gap-4">
+                    <span class="text-xl">🎧</span><span class="font-semibold">Aksesoris</span>
+                </div>
+                @if(isset($lowStockAksesoris) && $lowStockAksesoris > 0)
+                    <span class="px-2.5 py-0.5 text-xs font-bold bg-red-500 text-white rounded-full animate-pulse">{{ $lowStockAksesoris }}</span>
+                @endif
             </a>
 
             {{-- USERS --}}
-            <a href="{{ route('admin.users.index') }}" class="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 {{ request()->is('admin/users*') ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white shadow-lg scale-[1.02]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md' }}">
-                <span class="text-xl">👥</span><span class="font-semibold">Users</span>
+            <a href="{{ route('admin.users.index') }}" class="flex items-center justify-between px-5 py-4 rounded-2xl transition-all duration-300 {{ request()->is('admin/users*') ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white shadow-lg scale-[1.02]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md' }}">
+                <div class="flex items-center gap-4">
+                    <span class="text-xl">👥</span><span class="font-semibold">Users</span>
+                </div>
+                @if(isset($newUsersCount) && $newUsersCount > 0)
+                    <span class="px-2.5 py-0.5 text-xs font-bold bg-blue-600 text-white rounded-full">{{ $newUsersCount }}</span>
+                @endif
             </a>
 
             {{-- PESANAN MASUK --}}
-            <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 {{ request()->is('admin/orders*') ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white shadow-lg scale-[1.02]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md' }}">
-                <span class="text-xl">📦</span><span class="font-semibold">Pesanan Masuk</span>
+            <a href="{{ route('admin.orders.index') }}" class="flex items-center justify-between px-5 py-4 rounded-2xl transition-all duration-300 {{ request()->is('admin/orders*') ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white shadow-lg scale-[1.02]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md' }}">
+                <div class="flex items-center gap-4">
+                    <span class="text-xl">📦</span><span class="font-semibold">Pesanan Masuk</span>
+                </div>
+                @if(isset($pendingOrdersCount) && $pendingOrdersCount > 0)
+                    <span class="px-2.5 py-0.5 text-xs font-bold bg-orange-500 text-white rounded-full animate-bounce">{{ $pendingOrdersCount }}</span>
+                @endif
+            </a>
+
+            {{-- KELOLA VOUCHER --}}
+            <a href="{{ route('admin.vouchers.index') }}" class="flex items-center justify-between px-5 py-4 rounded-2xl transition-all duration-300 {{ request()->is('admin/vouchers*') ? 'bg-gradient-to-r from-blue-500 to-cyan-400 text-white shadow-lg scale-[1.02]' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:shadow-md' }}">
+                <div class="flex items-center gap-4">
+                    <span class="text-xl">🎟️</span><span class="font-semibold">Kelola Voucher</span>
+                </div>
+                @if(isset($emptyVouchersCount) && $emptyVouchersCount > 0)
+                    <span class="px-2.5 py-0.5 text-xs font-bold bg-red-600 text-white rounded-full">{{ $emptyVouchersCount }}</span>
+                @endif
             </a>
         </nav>
 

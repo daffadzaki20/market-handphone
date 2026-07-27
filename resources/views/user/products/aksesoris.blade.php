@@ -65,6 +65,18 @@
                             @else
                                 <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                             @endif
+
+                            <!-- 💗 WISHLIST BUTTON -->
+                            <button type="button"
+                                    class="wishlist-btn absolute top-2 right-2 z-10 bg-white/90 hover:bg-white p-2 rounded-full shadow-md transition-transform hover:scale-110"
+                                    data-product-id="{{ $product->id }}"
+                                    onclick="toggleWishlist(event, {{ $product->id }}, this)">
+                                <svg class="w-5 h-5 love-icon {{ in_array($product->id, $wishlistIds ?? []) ? 'text-red-500 fill-red-500' : 'text-gray-400 fill-none' }}"
+                                     stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                                </svg>
+                            </button>
                         </div>
 
                         <!-- CONTENT -->
@@ -153,6 +165,37 @@
                 e.preventDefault();
             });
         });
+
+        function toggleWishlist(event, productId, btnEl) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const icon = btnEl.querySelector('.love-icon');
+
+            fetch(`/wishlist/toggle/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'added') {
+                    icon.classList.remove('text-gray-400', 'fill-none');
+                    icon.classList.add('text-red-500', 'fill-red-500');
+                } else {
+                    icon.classList.remove('text-red-500', 'fill-red-500');
+                    icon.classList.add('text-gray-400', 'fill-none');
+                }
+
+                const badge = document.getElementById('wishlist-count');
+                if (badge) {
+                    badge.textContent = data.count;
+                }
+            })
+            .catch(err => console.error('Wishlist error:', err));
+        }
     </script>
 
 @endsection

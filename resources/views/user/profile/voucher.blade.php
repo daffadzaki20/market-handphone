@@ -63,7 +63,7 @@
                 Notifikasi
             </a>
 
-            <!-- 👇 Menu Voucher SEKARANG AKTIF (Oranye) 👇 -->
+            <!-- Menu Voucher Aktif (Oranye) -->
             <a href="{{ route('profile.voucher') }}" class="flex items-center gap-2 font-semibold text-orange-500 transition-colors">
                 <span class="text-orange-500">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
@@ -73,20 +73,20 @@
         </nav>
 
         <!-- Garis Pembatas -->
-            <div class="border-t border-gray-100 my-4"></div>
+        <div class="border-t border-gray-100 my-4"></div>
 
-            <!-- Menu Logout di Sidebar -->
-            <form method="POST" action="{{ route('logout') }}" class="flex items-center gap-2 font-semibold text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
-                @csrf
-                <button type="submit" class="flex items-center gap-2 w-full text-left">
-                    <span class="text-red-500">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                        </svg>
-                    </span>
-                    Logout
-                </button>
-            </form>
+        <!-- Menu Logout di Sidebar -->
+        <form method="POST" action="{{ route('logout') }}" class="flex items-center gap-2 font-semibold text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
+            @csrf
+            <button type="submit" class="flex items-center gap-2 w-full text-left">
+                <span class="text-red-500">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                </span>
+                Logout
+            </button>
+        </form>
     </div>
 
     <!-- ========================================== -->
@@ -100,65 +100,81 @@
             <p class="text-sm text-gray-500 mt-1">Kumpulkan dan gunakan voucher untuk belanja lebih hemat.</p>
         </div>
 
-        <!-- Form Tambah Voucher -->
-        <div class="bg-gray-50 p-4 rounded-md border border-gray-100 mb-8 flex flex-col sm:flex-row gap-3">
-            <input type="text" placeholder="Masukkan kode voucher di sini..." class="flex-1 border border-gray-300 rounded-sm px-4 py-2.5 text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none uppercase transition-colors">
-            <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-sm text-sm font-medium transition-colors shadow-sm">
+        <!-- Pesan Alert Sukses / Error -->
+        @if(session('success'))
+            <div class="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-md">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-md">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        <!-- Form Klaim Voucher -->
+        <form action="{{ route('profile.voucher.claim') }}" method="POST" class="bg-gray-50 p-4 rounded-md border border-gray-100 mb-8 flex flex-col sm:flex-row gap-3">
+            @csrf
+            <input type="text" name="code" placeholder="Masukkan kode voucher di sini..." required class="flex-1 border border-gray-300 rounded-sm px-4 py-2.5 text-sm focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none uppercase transition-colors">
+            <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-sm text-sm font-medium transition-colors shadow-sm">
                 Klaim Voucher
             </button>
-        </div>
+        </form>
 
-        <!-- Daftar Voucher (Grid Layout) -->
+        <!-- Daftar Voucher Dinamis dari Database -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             
-            <!-- TIKET VOUCHER 1 (Cashback) -->
-            <div class="flex border border-gray-200 rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow relative bg-white">
-                <!-- Bagian Kiri (Warna Brand) -->
-                <div class="w-28 bg-orange-500 flex flex-col justify-center items-center p-3 border-r-2 border-dashed border-white relative z-10">
-                    <span class="text-white text-xs font-bold text-center leading-tight tracking-wider">CASHBACK<br>10%</span>
-                    <!-- Efek potongan tiket atas bawah -->
-                    <div class="absolute -top-3 -right-3 w-6 h-6 bg-white rounded-full"></div>
-                    <div class="absolute -bottom-3 -right-3 w-6 h-6 bg-white rounded-full"></div>
-                </div>
-                <!-- Bagian Kanan (Detail) -->
-                <div class="flex-1 p-4 flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-sm font-semibold text-gray-800">Cashback s/d Rp 150.000</h3>
-                        <p class="text-xs text-gray-500 mt-1 leading-relaxed">Berlaku untuk pembelian Handphone Samsung. Min. belanja Rp 3.000.000.</p>
+            @forelse($myVouchers as $item)
+                <div class="flex border border-gray-200 rounded-md overflow-hidden shadow-sm transition-shadow relative bg-white {{ $item->used_at ? 'opacity-60 bg-gray-50' : 'hover:shadow-md' }}">
+                    <!-- Bagian Kiri (Tipe Diskon) -->
+                    <div class="w-28 {{ $item->used_at ? 'bg-gray-400' : 'bg-orange-500' }} flex flex-col justify-center items-center p-3 border-r-2 border-dashed border-white relative z-10 text-center">
+                        <span class="text-white text-xs font-bold leading-tight tracking-wider">
+                            {{ $item->voucher->type == 'percent' ? 'DISKON' : 'POTONGAN' }}
+                        </span>
+                        <span class="text-white text-sm font-black mt-1">
+                            {{ $item->voucher->type == 'percent' ? $item->voucher->value . '%' : 'Rp ' . number_format($item->voucher->value, 0, ',', '.') }}
+                        </span>
+                        <!-- Efek potongan tiket atas bawah -->
+                        <div class="absolute -top-3 -right-3 w-6 h-6 bg-white rounded-full"></div>
+                        <div class="absolute -bottom-3 -right-3 w-6 h-6 bg-white rounded-full"></div>
                     </div>
-                    <div class="flex justify-between items-end mt-3">
-                        <span class="text-xs font-medium text-red-500">Berakhir 12 Jam lagi</span>
-                        <a href="#" class="text-xs text-blue-500 hover:text-blue-600 font-medium">S&K</a>
+                    <!-- Bagian Kanan (Detail) -->
+                    <div class="flex-1 p-4 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-sm font-bold text-gray-800 tracking-wide">{{ $item->voucher->code }}</h3>
+                                @if($item->used_at)
+                                    <span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded font-bold uppercase">Terpakai</span>
+                                @else
+                                    <span class="text-[10px] bg-orange-50 text-orange-600 px-2 py-0.5 rounded font-bold uppercase">Terklaim</span>
+                                @endif
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1 leading-relaxed">
+                                Min. belanja Rp {{ number_format($item->voucher->min_spend, 0, ',', '.') }}.
+                            </p>
+                        </div>
+                        <div class="flex justify-between items-end mt-3">
+                            <span class="text-xs font-medium text-gray-500">
+                                @if($item->used_at)
+                                    Digunakan: {{ date('d M Y', strtotime($item->used_at)) }}
+                                @else
+                                    Berakhir: {{ $item->voucher->expired_at ? date('d M Y', strtotime($item->voucher->expired_at)) : 'Selamanya' }}
+                                @endif
+                            </span>
+                            <a href="#" class="text-xs text-blue-500 hover:text-blue-600 font-medium">S&K</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- TIKET VOUCHER 2 (Gratis Ongkir) -->
-            <div class="flex border border-gray-200 rounded-md overflow-hidden shadow-sm hover:shadow-md transition-shadow relative bg-white">
-                <!-- Bagian Kiri (Warna Biru / Warna Lain) -->
-                <div class="w-28 bg-blue-500 flex flex-col justify-center items-center p-3 border-r-2 border-dashed border-white relative z-10">
-                    <span class="text-white text-xs font-bold text-center leading-tight tracking-wider">GRATIS<br>ONGKIR</span>
-                    <div class="absolute -top-3 -right-3 w-6 h-6 bg-white rounded-full"></div>
-                    <div class="absolute -bottom-3 -right-3 w-6 h-6 bg-white rounded-full"></div>
+            @empty
+                <div class="col-span-2 text-center py-10 text-gray-400 text-sm bg-gray-50 rounded-md border border-dashed border-gray-200">
+                    Belum ada voucher yang diklaim. Masukkan kode voucher di atas untuk mengklaim!
                 </div>
-                <!-- Bagian Kanan (Detail) -->
-                <div class="flex-1 p-4 flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-sm font-semibold text-gray-800">Gratis Ongkir s/d Rp 40.000</h3>
-                        <p class="text-xs text-gray-500 mt-1 leading-relaxed">Berlaku untuk semua metode pengiriman (Reguler/Kargo). Min. belanja Rp 50.000.</p>
-                    </div>
-                    <div class="flex justify-between items-end mt-3">
-                        <span class="text-xs font-medium text-gray-500">Berlaku s/d 30 Apr 2026</span>
-                        <a href="#" class="text-xs text-blue-500 hover:text-blue-600 font-medium">S&K</a>
-                    </div>
-                </div>
-            </div>
+            @endforelse
 
         </div>
 
     </div>
 
 </div>
-
 
 @endsection

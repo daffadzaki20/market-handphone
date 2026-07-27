@@ -27,9 +27,9 @@
                 </div>
                 <h2 class="text-2xl font-bold text-gray-800 mb-2">Keranjangmu masih kosong</h2>
                 <p class="text-gray-500 mb-6">Yuk, temukan gadget impianmu sekarang!</p>
-                <a href="{{ route('handphone.index') }}" class="inline-block bg-orange-500 hover:bg-orange-600 shadow-lg shadow-orange-200 text-white font-bold py-3 px-8 rounded-xl transition-transform hover:-translate-y-1">
-                    Mulai Belanja
-                </a>
+                <a href="{{ route('products.handphone') }}" class="inline-block bg-orange-500 hover:bg-orange-600 shadow-lg shadow-orange-200 text-white font-bold py-3 px-8 rounded-xl transition-transform hover:-translate-y-1">
+    Mulai Belanja
+</a>
             </div>
         @else
             <!-- Kontrol Pilih Semua & Hapus -->

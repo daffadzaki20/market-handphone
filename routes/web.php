@@ -13,6 +13,9 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\Admin\VoucherController;
+use App\Http\Controllers\UserVoucherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +47,7 @@ Route::middleware('auth')->group(function () {
     // PROFIL
     // ------------------------------------------------------------------
     Route::prefix('profile')->name('profile.')->group(function () {
-        Route::get('/',              [ProfileController::class, 'edit'])->name('edit');
+        Route::get('/',             [ProfileController::class, 'edit'])->name('edit');
         Route::post('/update',       [ProfileController::class, 'update'])->name('update');
         Route::post('/photo',        [ProfileController::class, 'uploadPhoto'])->name('photo');
         Route::delete('/',           [ProfileController::class, 'destroy'])->name('destroy');
@@ -60,8 +63,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/kartu/{id}/detail',    [PaymentMethodController::class, 'getCardDetails'])->name('card.detail');
         Route::delete('/kartu/{id}',         [PaymentMethodController::class, 'destroy'])->name('bank.destroy');
 
-        Route::view('/notifikasi',   'user.profile.notifikasi')->name('notifications');
-        Route::view('/voucher',      'user.profile.voucher')->name('voucher');
+        // 👇 RUTE NOTIFIKASI SUDAH DIPERBARUI MENGGUNAKAN CONTROLLER 👇
+        Route::get('/notifikasi',    [ProfileController::class, 'notifications'])->name('notifications');
+        
+        Route::get('/voucher', [UserVoucherController::class, 'index'])->name('voucher');
+        Route::post('/vouchers/claim', [UserVoucherController::class, 'claim'])->name('voucher.claim');
     });
 
     // ------------------------------------------------------------------
@@ -78,12 +84,17 @@ Route::middleware('auth')->group(function () {
     // KERANJANG
     // ------------------------------------------------------------------
     Route::prefix('cart')->name('cart.')->group(function () {
-        Route::get('/',               [CartController::class, 'index'])->name('index');
-        Route::post('/add/{id}',      [CartController::class, 'store'])->name('add');
-        Route::patch('/update/{id}',  [CartController::class, 'update'])->name('update');
-        Route::delete('/remove/{id}', [CartController::class, 'destroy'])->name('remove');
-        Route::delete('/bulk-delete', [CartController::class, 'bulkDelete'])->name('bulk-delete');
+        Route::get('/',                    [CartController::class, 'index'])->name('index');
+        Route::post('/add/{id}',           [CartController::class, 'store'])->name('add');
+        Route::patch('/update/{id}',       [CartController::class, 'update'])->name('update');
+        Route::delete('/remove/{id}',      [CartController::class, 'destroy'])->name('remove');
+        Route::delete('/bulk-delete',      [CartController::class, 'bulkDelete'])->name('bulk-delete');
     });
+
+    // Wishlist Routes
+    Route::post('/wishlist/toggle/{product}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 
     // ------------------------------------------------------------------
     // CHECKOUT & ORDER (USER)
@@ -92,8 +103,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout/process', [OrderController::class, 'process'])->name('checkout.process');
 
     Route::prefix('orders')->name('orders.')->group(function () {
-        Route::get('/',            [OrderController::class, 'index'])->name('index');
-        Route::get('/{order}',     [OrderController::class, 'show'])->name('show');
+        Route::get('/',              [OrderController::class, 'index'])->name('index');
+        Route::get('/{order}',       [OrderController::class, 'show'])->name('show');
         Route::put('/{id}/cancel', [OrderController::class, 'userCancel'])->name('cancel');
     });
 
@@ -136,15 +147,24 @@ Route::middleware('auth')->group(function () {
             Route::get('/{id}/edit', [AdminUserController::class, 'edit'])->name('edit');
             Route::put('/{id}',      [AdminUserController::class, 'update'])->name('update');
             Route::delete('/{id}',   [AdminUserController::class, 'destroy'])->name('destroy');
-            
         });
 
         // Orders Admin
         Route::prefix('orders')->name('orders.')->group(function () {
-            Route::get('/',            [OrderController::class, 'adminIndex'])->name('index');
+            Route::get('/',              [OrderController::class, 'adminIndex'])->name('index');
             Route::get('/{id}/detail', [OrderController::class, 'adminShow'])->name('show');
             Route::put('/{id}/status', [OrderController::class, 'updateStatus'])->name('updateStatus');
             Route::put('/{id}/cancel', [OrderController::class, 'adminCancel'])->name('cancel');
+        });
+
+        // Kelola Voucher Admin
+        Route::prefix('vouchers')->name('vouchers.')->group(function () {
+            Route::get('/',          [VoucherController::class, 'index'])->name('index');
+            Route::get('/create',    [VoucherController::class, 'create'])->name('create');
+            Route::post('/',         [VoucherController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [VoucherController::class, 'edit'])->name('edit');
+            Route::put('/{id}',      [VoucherController::class, 'update'])->name('update');
+            Route::delete('/{id}',   [VoucherController::class, 'destroy'])->name('destroy');
         });
 
         // Laporan PDF

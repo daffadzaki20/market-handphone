@@ -39,9 +39,60 @@
                         Aksesoris
                     </a>
                     
+                   
                     <?php if(auth()->guard()->check()): ?>
-                        <a href="<?php echo e(route('orders.index')); ?>" class="pb-1 transition-colors duration-200 <?php echo e(request()->is('orders') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500'); ?>">
+                        <?php
+                            // 1. Menghitung jumlah pesanan aktif
+                            $activeOrdersCount = \App\Models\Order::where('user_id', Auth::id())
+                                ->whereNotIn('status', ['selesai', 'dibatalkan'])
+                                ->count();
+
+                            // 2. Menghitung jumlah produk di wishlist user
+                            $wishlistCount = \App\Models\Wishlist::where('user_id', Auth::id())
+                                ->count();
+
+                            // 3. Menghitung voucher yang masih tersedia stoknya
+                            $voucherCount = \App\Models\Voucher::where('stock', '>', 0)->count();
+
+                            // 4. Hitung TOTAL keseluruhan Notifikasi
+                            $totalNotif = $activeOrdersCount + $voucherCount;
+
+                            // 5. LOGIKA "SUDAH DIBACA" YANG DIPERBARUI
+                            // Cek apakah user sedang membuka halaman notifikasi (berdasarkan route name atau URL)
+                            if (request()->routeIs('profile.notifications') || request()->is('profile/notifikasi')) {
+                                // Simpan total notifikasi ke session
+                                session(['read_notif_count' => $totalNotif]);
+                                session()->save(); // Paksa session tersimpan seketika itu juga
+                                
+                                // Paksa angka notifikasi baru menjadi 0 saat sedang berada di halaman ini
+                                $newNotifCount = 0; 
+                            } else {
+                                // Jika berada di halaman lain, hitung selisihnya
+                                $readCount = session('read_notif_count', 0);
+                                $newNotifCount = max(0, $totalNotif - $readCount);
+                            }
+                        ?>
+
+                        
+                        <a href="<?php echo e(route('orders.index')); ?>" class="relative pb-1 transition-colors duration-200 <?php echo e(request()->is('orders') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500'); ?>">
                             Pesanan Saya
+                            <?php if($activeOrdersCount > 0): ?>
+                                <span class="absolute -top-2 -right-4 bg-orange-500 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full border border-white shadow-sm">
+                                    <?php echo e($activeOrdersCount); ?>
+
+                                </span>
+                            <?php endif; ?>
+                        </a>
+
+                        
+                        <a href="<?php echo e(route('wishlist.index')); ?>" class="relative pb-1 transition-colors duration-200 <?php echo e(request()->is('wishlist') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-blue-500'); ?>">
+                            Wishlist
+                            <?php if($wishlistCount > 0): ?>
+                                <span class="absolute -top-2 -right-4 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full border border-white shadow-sm">
+                                    <?php echo e($wishlistCount); ?>
+
+                                </span>
+                            <?php endif; ?>
                         </a>
                     <?php endif; ?>
                 </div>
@@ -55,9 +106,13 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                             </svg>
-                            <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm">
-                                3
-                            </span>
+                            
+                            <?php if($newNotifCount > 0): ?>
+                                <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm">
+                                    <?php echo e($newNotifCount > 99 ? '99+' : $newNotifCount); ?>
+
+                                </span>
+                            <?php endif; ?>
                         </a>
                     <?php endif; ?>
 
@@ -137,8 +192,31 @@
                         🎧 Aksesoris
                     </a>
                     <?php if(auth()->guard()->check()): ?>
-                        <a href="<?php echo e(route('orders.index')); ?>" class="block px-4 py-3 rounded-xl font-bold <?php echo e(request()->is('orders') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'); ?>">
-                            📦 Pesanan Saya
+                        <?php
+                            $activeOrdersCount = \App\Models\Order::where('user_id', Auth::id())
+                                ->whereNotIn('status', ['selesai', 'dibatalkan'])
+                                ->count();
+
+                            $wishlistCount = \App\Models\Wishlist::where('user_id', Auth::id())
+                                ->count();
+                        ?>
+                        <a href="<?php echo e(route('orders.index')); ?>" class="flex items-center justify-between px-4 py-3 rounded-xl font-bold <?php echo e(request()->is('orders') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'); ?>">
+                            <span>📦 Pesanan Saya</span>
+                            <?php if($activeOrdersCount > 0): ?>
+                                <span class="bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                    <?php echo e($activeOrdersCount); ?>
+
+                                </span>
+                            <?php endif; ?>
+                        </a>
+                        <a href="<?php echo e(route('wishlist.index')); ?>" class="flex items-center justify-between px-4 py-3 rounded-xl font-bold <?php echo e(request()->is('wishlist') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'); ?>">
+                            <span>❤️ Wishlist</span>
+                            <?php if($wishlistCount > 0): ?>
+                                <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                    <?php echo e($wishlistCount); ?>
+
+                                </span>
+                            <?php endif; ?>
                         </a>
                         <a href="<?php echo e(route('profile.edit')); ?>" class="block px-4 py-3 rounded-xl font-bold <?php echo e(request()->is('profile') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'); ?>">
                             👤 Profil Saya
@@ -180,6 +258,7 @@
     </div>
 
     
+    <?php if(auth()->guard()->check()): ?>
     <div x-data="{ wishlistOpen: false }" 
          @click.outside="wishlistOpen = false"
          @mouseenter="if(window.innerWidth >= 768) wishlistOpen = true"
@@ -188,31 +267,35 @@
          class="fixed right-0 top-1/2 -translate-y-1/2 z-[9999] flex items-center transition-transform duration-500 ease-in-out"
          :class="wishlistOpen ? 'translate-x-0' : 'translate-x-[calc(100%-64px)]'">
          
-        <div @click="if(window.innerWidth < 768) wishlistOpen = !wishlistOpen" 
-             class="bg-white/80 backdrop-blur-lg border border-white/50 shadow-2xl rounded-l-3xl p-4 cursor-pointer hover:bg-white transition-all">
+        <a href="<?php echo e(route('wishlist.index')); ?>"
+           @click="if(window.innerWidth < 768 && !wishlistOpen) { $event.preventDefault(); wishlistOpen = true }"
+           class="bg-white/80 backdrop-blur-lg border border-white/50 shadow-2xl rounded-l-3xl p-4 cursor-pointer hover:bg-white transition-all">
             <div class="relative">
-                <svg class="w-8 h-8 text-red-500 fill-current animate-pulse" viewBox="0 0 24 24">
+                <svg class="w-8 h-8 text-red-500 fill-current" viewBox="0 0 24 24">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
-                <span class="absolute -top-3 -right-3 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full border-2 border-white shadow-sm">0</span>
+                <span id="wishlist-count" class="absolute -top-2 -left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full border-2 border-white shadow-sm">
+                    <?php echo e(\App\Models\Wishlist::where('user_id', Auth::id())->count()); ?>
+
+                </span>
             </div>
-        </div>
+        </a>
         
         <div class="overflow-hidden transition-all duration-500 ease-in-out"
              :class="wishlistOpen ? 'max-w-xs opacity-100 visible' : 'max-w-0 opacity-0 invisible'">
             <div class="bg-white/90 backdrop-blur-xl border border-white shadow-2xl rounded-l-2xl p-6 w-72">
                 <h3 class="font-black text-gray-800 text-base mb-2">❤️ My Favorites</h3>
                 <p class="text-xs text-gray-500 mb-4 italic leading-relaxed">Produk impianmu tersimpan aman di sini.</p>
-                <a href="#" @click.prevent="alert('Fitur Wishlist sedang dalam tahap pengembangan.')" 
-                   class="block text-center bg-gray-100 text-gray-500 py-3 rounded-xl text-xs font-black shadow-sm hover:scale-105 transition-all uppercase tracking-widest border border-gray-200 cursor-not-allowed">
-                    Fitur Segera Hadir
+                <a href="<?php echo e(route('wishlist.index')); ?>"
+                   class="block text-center bg-blue-600 text-white py-3 rounded-xl text-xs font-black shadow-sm hover:bg-blue-700 hover:scale-105 transition-all uppercase tracking-widest">
+                    Lihat Wishlist
                 </a>
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
     <?php echo $__env->yieldPushContent('scripts'); ?>
 
 </body>
-</html>
-<?php /**PATH D:\projek pak fajar\market-handphone\resources\views/layouts/app.blade.php ENDPATH**/ ?>
+</html><?php /**PATH D:\projek pak fajar\market-handphone\resources\views/layouts/app.blade.php ENDPATH**/ ?>

@@ -1,29 +1,28 @@
-
-
 <?php $__env->startSection('content'); ?>
 
-    <!-- WRAPPER UTAMA (Agar tidak menabrak navbar dan responsif di HP) -->
+    <!-- WRAPPER UTAMA -->
     <div class="py-12 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <!-- Bungkusan Konten -->
-        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-10">
+        <!-- Bungkusan Konten Utama -->
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden relative">
+            
+            <!-- ⬅️ TOMBOL KEMBALI -->
+            <a href="<?php echo e($brandType === 'aksesoris' ? '/products/aksesoris' : '/products/handphone'); ?>" 
+               class="absolute top-6 left-6 z-20 bg-white/90 backdrop-blur-sm border border-gray-200 text-gray-700 hover:text-blue-600 hover:bg-white p-3 rounded-2xl transition-all shadow-sm hover:shadow-md group" title="Kembali">
+                <svg class="w-6 h-6 group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+            </a>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-10 pt-20 md:pt-10">
 
                 <!-- KIRI: FOTO PRODUK -->
                 <div class="flex justify-center items-center mb-6 md:mb-0 relative">
-                    <!-- Tombol Kembali (Mobile Friendly) diletakkan di sudut kiri atas gambar -->
-                    <a href="<?php echo e($brandType === 'aksesoris' ? '/products/aksesoris' : '/products/handphone'); ?>" class="absolute top-0 left-0 bg-white/80 backdrop-blur-sm border border-gray-200 text-gray-600 hover:text-blue-600 p-2 rounded-xl transition-colors shadow-sm md:hidden">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                    </a>
-
                     <?php if(isset($product->image) && $product->image): ?>
                         <img id="product-image" 
                              src="<?php echo e($product->image_url); ?>"
                              alt="<?php echo e($product->name); ?>"
-                             class="w-full max-w-md h-72 md:h-[400px] object-contain rounded-2xl border border-gray-100 shadow-sm p-6 bg-gray-50 transition-transform duration-500 hover:scale-105">
+                             class="w-full max-w-md h-72 md:h-[400px] object-contain rounded-2xl border border-gray-100 shadow-sm p-6 bg-gray-50 transition-transform duration-500 hover:scale-105 mt-4 md:mt-0">
                     <?php else: ?>
-                        <!-- Placeholder jika tidak ada gambar -->
-                        <div id="product-image" class="w-full max-w-md h-72 md:h-[400px] flex flex-col items-center justify-center rounded-2xl border border-gray-100 shadow-sm p-6 bg-gray-50 text-gray-300">
+                        <div id="product-image" class="w-full max-w-md h-72 md:h-[400px] flex flex-col items-center justify-center rounded-2xl border border-gray-100 shadow-sm p-6 bg-gray-50 text-gray-300 mt-4 md:mt-0">
                             <svg class="w-24 h-24 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                             <span class="text-sm font-medium text-gray-400">Gambar Belum Tersedia</span>
                         </div>
@@ -33,7 +32,6 @@
                 <!-- KANAN: INFO PRODUK -->
                 <div class="flex flex-col justify-center">
                     
-                    <!-- Kategori & Brand -->
                     <div class="flex items-center gap-3 mb-3">
                         <span class="bg-blue-50 text-blue-600 text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest border border-blue-100">
                             <?php echo e($product->brand?->name ?? 'Unbranded'); ?>
@@ -61,7 +59,6 @@
                         <?php endif; ?>
                     </div>
 
-                    <!-- Spesifikasi Handphone -->
                     <?php if($brandType === 'hp'): ?>
                     <div class="grid grid-cols-2 gap-4 mb-8 bg-gray-50 p-5 rounded-2xl border border-gray-100">
                         <div class="flex items-center gap-4">
@@ -86,32 +83,118 @@
                         <p class="text-gray-600 leading-relaxed text-sm whitespace-pre-line"><?php echo e($product->description); ?></p>
                     </div>
 
-                    <div class="mt-auto flex flex-col sm:flex-row gap-4">
+                    <!-- 🛒 & 🛍️ TOMBOL AKSI BARU -->
+                    <div class="mt-auto flex flex-col sm:flex-row gap-3">
+                        
+                        <!-- Keranjang -->
                         <button onclick="addToCartAnimation()" 
-                                class="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-all text-white py-4 px-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 shadow-lg shadow-orange-200 hover:shadow-none hover:scale-[0.98] active:scale-95 group">
-                            <svg class="w-6 h-6 group-hover:-rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                            Masukkan Keranjang
+                                class="flex-1 bg-white border-2 border-orange-500 text-orange-600 hover:bg-orange-50 transition-all py-3.5 px-4 rounded-xl font-black text-base md:text-lg flex items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-95 group">
+                            <svg class="w-5 h-5 md:w-6 md:h-6 group-hover:-rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            Keranjang
                         </button>
                         
-                        <a href="<?php echo e($brandType === 'aksesoris' ? '/products/aksesoris' : '/products/handphone'); ?>" class="hidden md:flex flex-none bg-white hover:bg-gray-50 border border-gray-200 transition-all text-gray-700 py-4 px-8 rounded-xl font-bold items-center justify-center shadow-sm hover:shadow-md">
-                            Kembali
-                        </a>
+                        <!-- Beli Sekarang -->
+                        <button onclick="buyNow(<?php echo e($product->id); ?>)" 
+                                class="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-all text-white py-3.5 px-4 rounded-xl font-black text-base md:text-lg flex items-center justify-center gap-2 shadow-lg shadow-orange-200 hover:shadow-none hover:scale-[0.98] active:scale-95">
+                            Beli Sekarang
+                        </button>
+
                     </div>
 
                 </div>
             </div>
         </div>
 
+        <!-- ========================================== -->
+        <!-- MULAI SECTION PRODUK LAINNYA -->
+        <!-- ========================================== -->
+        <div class="mt-16 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-black text-gray-800">Produk Lainnya</h2>
+                <a href="<?php echo e($brandType === 'aksesoris' ? '/products/aksesoris' : '/products/handphone'); ?>" class="text-sm font-bold text-blue-600 hover:text-blue-700 hover:underline">
+                    Lihat Semua
+                </a>
+            </div>
+
+            <!-- Grid Produk -->
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+                
+                <?php $__empty_1 = true; $__currentLoopData = $relatedProducts ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $related): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                <a href="/product/<?php echo e($related->id); ?>" class="group bg-white rounded-2xl border border-gray-100 p-4 hover:shadow-xl hover:border-orange-200 transition-all duration-300 flex flex-col h-full relative">
+                    
+                    <!-- Kotak Gambar -->
+                    <div class="aspect-square mb-4 overflow-hidden rounded-xl bg-gray-50 flex items-center justify-center relative p-2">
+                        <?php if(isset($related->image) && $related->image): ?>
+                            <img src="<?php echo e($related->image_url); ?>" alt="<?php echo e($related->name); ?>" class="object-contain w-full h-full group-hover:scale-110 transition-transform duration-500">
+                        <?php else: ?>
+                            <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <?php endif; ?>
+                        
+                        <!-- 💗 WISHLIST BUTTON -->
+                        <button type="button"
+                                class="wishlist-btn absolute top-2 right-2 z-10 bg-white/90 hover:bg-white p-2 rounded-full shadow-md transition-transform hover:scale-110"
+                                onclick="toggleWishlist(event, <?php echo e($related->id); ?>, this)">
+                            <svg class="w-5 h-5 love-icon <?php echo e(in_array($related->id, $wishlistIds ?? []) ? 'text-red-500 fill-red-500' : 'text-gray-400 fill-none'); ?>"
+                                 stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                            </svg>
+                        </button>
+
+                        <!-- Badge Stok -->
+                        <?php if(isset($related->stock) && $related->stock < 5): ?>
+                            <span class="absolute top-2 left-2 bg-red-100 text-red-600 text-[10px] font-black px-2 py-1 rounded-md">Sisa <?php echo e($related->stock); ?></span>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Info Singkat Produk -->
+                    <div class="flex flex-col flex-grow">
+                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1"><?php echo e($related->brand?->name ?? 'Unbranded'); ?></p>
+                        <h3 class="text-gray-800 font-bold text-sm line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors"><?php echo e($related->name); ?></h3>
+                        
+                        <div class="mt-auto">
+                            <p class="text-orange-500 font-black text-base md:text-lg mb-3">
+                                Rp <?php echo e(number_format($related->price, 0, ',', '.')); ?>
+
+                            </p>
+
+                            <!-- BAGIAN RAM/ROM & STOK -->
+                            <div class="flex items-center justify-between text-[11px] text-gray-500 pt-3 border-t border-gray-100">
+                                <span class="font-medium">
+                                    <?php echo e($related->ram ?? '-'); ?> / <?php echo e($related->storage ?? '-'); ?>
+
+                                </span>
+                                <span class="font-medium text-gray-400">
+                                    Stok: <?php echo e($related->stock ?? 0); ?>
+
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                <div class="col-span-full py-8 text-center bg-gray-50 rounded-2xl border border-gray-100">
+                    <p class="text-gray-500 font-medium">Belum ada produk rekomendasi lainnya.</p>
+                </div>
+                <?php endif; ?>
+
+            </div>
+        </div>
+        <!-- ========================================== -->
+        <!-- SELESAI SECTION PRODUK LAINNYA -->
+        <!-- ========================================== -->
+
     </div>
 
-    <!-- SCRIPT ANIMASI MASUK KERANJANG -->
+    <!-- SCRIPT GABUNGAN (CART, BUY NOW & WISHLIST) -->
+   <!-- SCRIPT GABUNGAN (CART, BUY NOW & WISHLIST) -->
     <script>
+    // 🛒 Script Animasi Keranjang (Tetap sama)
     function addToCartAnimation() {
         const imgToDrag = document.getElementById('product-image');
         const cart = document.getElementById('cart-icon');
         const cartCount = document.getElementById('cart-count');
 
-        // Pastikan elemen ada dan tidak terjadi error jika cart di-hide (misal karena auth)
         if (imgToDrag && cart) {
             const imgClone = imgToDrag.cloneNode(true);
             const imgCoords = imgToDrag.getBoundingClientRect();
@@ -126,7 +209,7 @@
                 left: imgCoords.left + 'px',
                 borderRadius: '16px',
                 opacity: '0.85',
-                transition: 'all 0.8s cubic-bezier(0.25, 1, 0.5, 1)', // Efek lebih smooth
+                transition: 'all 0.8s cubic-bezier(0.25, 1, 0.5, 1)',
                 pointerEvents: 'none',
                 boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
             });
@@ -147,7 +230,6 @@
             setTimeout(() => {
                 imgClone.remove();
                 
-                // 🔥 KIRIM DATA KE DATABASE 🔥
                 fetch(`/cart/add/<?php echo e($product->id); ?>`, {
                     method: 'POST',
                     headers: {
@@ -167,15 +249,11 @@
                 })
                 .then(data => {
                     if (data && data.status === 'success') {
-                        // Update angka di navbar (Real-time dari database)
                         if(cartCount) {
                             cartCount.innerText = data.cart_count;
-                            // Animasi pop-up pada badge merah
                             cartCount.classList.add('scale-150');
                             setTimeout(() => cartCount.classList.remove('scale-150'), 300);
                         }
-
-                        // Efek visual pada ikon keranjang bergoyang
                         cart.classList.add('scale-125', 'text-orange-500', '-rotate-12');
                         setTimeout(() => cart.classList.remove('scale-125', 'text-orange-500', '-rotate-12'), 300);
                     }
@@ -184,12 +262,64 @@
 
             }, 850);
         } else {
-            // Jika user belum login dan icon cart tidak ada, arahkan langsung ke backend untuk diproses Auth
             window.location.href = '/login';
         }
+    }
+
+    // 🛍️ Script Beli Sekarang (Langsung Bypass ke Checkout)
+    function buyNow(productId) {
+        <?php if(Auth::check()): ?>
+            // Langsung alihkan ke halaman checkout dengan membawa ID produk di URL
+            window.location.href = '/checkout?product_id=' + productId + '&quantity=1';
+        <?php else: ?>
+            alert('Silakan login terlebih dahulu untuk belanja!');
+            window.location.href = '/login';
+        <?php endif; ?>
+    }
+
+    // 💗 Script Toggle Wishlist (Tetap sama)
+    function toggleWishlist(event, productId, btnEl) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const icon = btnEl.querySelector('.love-icon');
+
+        fetch(`/wishlist/toggle/${productId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(res => {
+            if (res.status === 401) {
+                alert('Silakan login terlebih dahulu untuk menambahkan ke wishlist!');
+                window.location.href = '/login';
+                throw new Error('Unauthorized');
+            }
+            return res.json();
+        })
+        .then(data => {
+            if (data.status === 'added') {
+                icon.classList.remove('text-gray-400', 'fill-none');
+                icon.classList.add('text-red-500', 'fill-red-500');
+            } else if (data.status === 'removed') {
+                icon.classList.remove('text-red-500', 'fill-red-500');
+                icon.classList.add('text-gray-400', 'fill-none');
+            }
+
+            const newCount = data.wishlist_count !== undefined ? data.wishlist_count : data.count;
+
+            const badge = document.getElementById('wishlist-count');
+            if (badge && newCount !== undefined) {
+                badge.textContent = newCount;
+                badge.classList.add('scale-150');
+                setTimeout(() => badge.classList.remove('scale-150'), 300);
+            }
+        })
+        .catch(err => console.error('Wishlist error:', err));
     }
     </script>
 
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\projek pak fajar\market-handphone\resources\views/user/products/detail.blade.php ENDPATH**/ ?>

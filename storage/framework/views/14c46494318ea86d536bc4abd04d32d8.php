@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('content'); ?>
 
 <!-- CSS & JS untuk Leaflet Maps -->
@@ -696,7 +694,6 @@ function openModalAlamat(isEdit = false) {
             form.action = "<?php echo e(route('alamat.store')); ?>";
             document.getElementById('method-field').innerHTML = '';
             form.reset();
-<<<<<<< HEAD:storage/framework/views/14c46494318ea86d536bc4abd04d32d8.php
 
             const defaultLat = -6.200000;
             const defaultLng = 106.816666;
@@ -710,9 +707,6 @@ function openModalAlamat(isEdit = false) {
                 marker.setLatLng([defaultLat, defaultLng]);
             }
 
-=======
-            
->>>>>>> 230c9d94b80d609df396a78d0dd3bec83f4ac0b8:storage/framework/views/9c52ad9df08dbdbe5b85dd597368d96f.php
             ['kabupaten', 'kecamatan', 'desa'].forEach(id => {
                 document.getElementById(id).disabled = true;
                 document.getElementById(id).innerHTML = `<option value="" disabled selected>Pilih...</option>`;

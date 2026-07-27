@@ -81,7 +81,7 @@
             <div class="mb-6 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
                 <div class="font-bold mb-1 flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Gagal menyimpan kartu!
+                    Terdapat kesalahan input!
                 </div>
                 <ul class="list-disc list-inside text-sm ml-7">
                     @foreach ($errors->all() as $error)
@@ -98,6 +98,9 @@
             </div>
         @endif
 
+        <!-- ============================================== -->
+        <!-- BAGIAN KARTU KREDIT/DEBIT -->
+        <!-- ============================================== -->
         <div class="border-b border-gray-200 pb-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
                 <h1 class="text-xl font-medium text-gray-800">Kartu Kredit / Debit</h1>
@@ -123,7 +126,7 @@
                             <span class="font-bold italic text-slate-300">VISA</span>
                         </div>
 
-                        {{-- Nomor Kartu: hanya tampilkan 4 digit terakhir --}}
+                        {{-- Nomor Kartu --}}
                         <div class="font-mono text-lg tracking-[0.2em] mb-1 shadow-sm" id="card-number-{{ $item->id }}">
                             •••• •••• •••• {{ substr($item->account_number, -4) }}
                         </div>
@@ -136,7 +139,6 @@
                         <div class="flex justify-between items-end mt-2">
                             <div class="font-medium uppercase text-sm tracking-widest text-slate-300">{{ $item->account_name }}</div>
                             <div class="flex items-center gap-3">
-                                {{-- Tombol Lihat Detail --}}
                                 <button type="button" onclick="openRevealModal({{ $item->id }})" 
                                     class="text-xs text-slate-300 hover:text-white transition-colors flex items-center gap-1">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,7 +148,6 @@
                                     Lihat Detail
                                 </button>
 
-                                {{-- Tombol Hapus --}}
                                 <form action="{{ route('profile.bank.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kartu ini?');">
                                     @csrf
                                     @method('DELETE')
@@ -157,47 +158,83 @@
                     </div>
                 </div>
             @empty
-                <div class="col-span-full py-12 flex flex-col items-center justify-center text-gray-400 mb-10">
+                <div class="col-span-full py-12 flex flex-col items-center justify-center text-gray-400 mb-10 border border-gray-100 border-dashed rounded-xl bg-gray-50">
                     <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
                     <p class="text-sm">Anda belum memiliki kartu kredit / debit yang tersimpan.</p>
                 </div>
             @endforelse
         </div>
 
-        <div class="border-b border-gray-200 pb-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-                <h1 class="text-xl font-medium text-gray-800">Rekening Bank Saya</h1>
-            </div>
-            <button class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-sm text-sm font-medium transition-colors shadow-sm flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                Tambah Rekening Bank
-            </button>
-        </div>
-
-        <div class="py-12 flex flex-col items-center justify-center text-gray-400 mb-10">
-            <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
-            <p class="text-sm">Anda belum memiliki rekening bank yang tersimpan.</p>
-        </div>
+        <!-- ============================================== -->
+        <!-- BAGIAN DOMPET DIGITAL (E-WALLET) -->
+        <!-- ============================================== -->
+        
+        @php
+            $ewallets = Auth::user()->paymentMethods()->where('type', 'ewallet')->get();
+        @endphp
 
         <div class="border-b border-gray-200 pb-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
                 <h1 class="text-xl font-medium text-gray-800">Dompet Digital (E-Wallet)</h1>
             </div>
-            <button class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-sm text-sm font-medium transition-colors shadow-sm flex items-center justify-center gap-2">
+            <button onclick="toggleModal('modalTambahEwallet')" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-sm text-sm font-medium transition-colors shadow-sm flex items-center justify-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 Tautkan E-Wallet
             </button>
         </div>
 
-        <div class="py-12 flex flex-col items-center justify-center text-gray-400">
-            <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-            <p class="text-sm">Belum ada akun E-Wallet (Gopay, OVO, Dana, dll) yang tertaut.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            @forelse($ewallets as $ewallet)
+                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow relative group">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-black text-xs border border-blue-100 overflow-hidden">
+                                @if(strtolower($ewallet->provider) === 'gopay')
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GoPay" class="h-6 object-contain">
+                                @elseif(strtolower($ewallet->provider) === 'ovo')
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo_purple.svg" alt="OVO" class="h-6 object-contain">
+                                @elseif(strtolower($ewallet->provider) === 'dana')
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg" alt="DANA" class="h-6 object-contain">
+                                @elseif(strtolower($ewallet->provider) === 'shopeepay')
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg" alt="ShopeePay" class="h-6 object-contain">
+                                @elseif(strtolower($ewallet->provider) === 'linkaja')
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/85/LinkAja.svg" alt="LinkAja" class="h-6 object-contain">
+                                @else
+                                    {{ strtoupper(substr($ewallet->provider ?? 'EW', 0, 4)) }}
+                                @endif
+                            </div>
+                            <div>
+                                <div class="font-bold text-gray-800">{{ $ewallet->provider ?? 'E-Wallet' }}</div>
+                                <div class="text-xs text-gray-500 uppercase">{{ $ewallet->account_name }}</div>
+                            </div>
+                        </div>
+                        
+                        <form action="{{ route('profile.bank.destroy', $ewallet->id) }}" method="POST" onsubmit="return confirm('Yakin ingin memutuskan tautan e-wallet ini?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-xs text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-md transition-colors font-medium">Hapus</button>
+                        </form>
+                    </div>
+                    
+                    <div class="font-mono text-gray-800 tracking-widest text-lg bg-gray-50 px-4 py-3 rounded-lg border border-gray-100 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                        {{ substr($ewallet->account_number, 0, 4) }} •••• {{ substr($ewallet->account_number, -4) }}
+                    </div>
+                </div>
+            @empty
+                <div class="col-span-full py-12 flex flex-col items-center justify-center text-gray-400 border border-gray-100 border-dashed rounded-xl bg-gray-50">
+                    <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    <p class="text-sm">Belum ada akun E-Wallet (Gopay, OVO, Dana, dll) yang tertaut.</p>
+                </div>
+            @endforelse
         </div>
 
     </div>
 </div>
 
-{{-- Modal Tambah Kartu --}}
+<!-- ============================================== -->
+<!-- MODAL TAMBAH KARTU KREDIT/DEBIT -->
+<!-- ============================================== -->
 <div id="modalTambahKartu" class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900/60 backdrop-blur-sm" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div class="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true">&#8203;</div>
@@ -210,6 +247,8 @@
             </div>
             <form action="{{ route('profile.card.store') }}" method="POST" class="space-y-4">
                 @csrf
+                <input type="hidden" name="type" value="kartu">
+                
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama di Kartu</label>
                     <input type="text" name="nama_pemilik" required placeholder="CONTOH: YANTO"
@@ -242,7 +281,94 @@
     </div>
 </div>
 
-{{-- Modal Verifikasi Password untuk Lihat Detail Kartu --}}
+<!-- ============================================== -->
+<!-- MODAL TAUTKAN E-WALLET -->
+<!-- ============================================== -->
+<div id="modalTambahEwallet" class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900/60 backdrop-blur-sm" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div class="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true">&#8203;</div>
+        <div class="relative inline-block w-full px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-2xl shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:p-6 sm:px-8">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xl font-bold text-gray-900" id="modal-title">Tautkan E-Wallet Baru</h3>
+                <button type="button" onclick="toggleModal('modalTambahEwallet')" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <form action="{{ route('profile.card.store') }}" method="POST" class="space-y-4">
+                @csrf
+                <input type="hidden" name="type" value="ewallet">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Pilih Provider</label>
+                    
+                    <!-- Custom Select Dropdown -->
+                    <div class="relative" id="ewallet-select-container">
+                        <!-- Hidden input untuk mengirim data ke backend -->
+                        <input type="hidden" name="provider" id="provider_input" required>
+                        
+                        <!-- Tombol Dropdown -->
+                        <button type="button" onclick="toggleEwalletDropdown()" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg hover:border-orange-500 focus:ring-orange-500 focus:border-orange-500 flex items-center justify-between bg-white text-left transition-colors">
+                            <div class="flex items-center gap-3" id="selected_ewallet_content">
+                                <span class="text-gray-500">-- Pilih E-Wallet --</span>
+                            </div>
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+
+                        <!-- Pilihan Dropdown -->
+                        <div id="ewallet_options" class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl hidden max-h-60 overflow-y-auto divide-y divide-gray-50">
+                            
+                            <div class="px-4 py-3 cursor-pointer hover:bg-orange-50 flex items-center gap-3 transition-colors" onclick="selectEwallet('GoPay', 'https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg')">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GoPay" class="h-5 object-contain w-14 object-left">
+                                <span class="font-medium text-gray-700">GoPay</span>
+                            </div>
+                            
+                            <div class="px-4 py-3 cursor-pointer hover:bg-orange-50 flex items-center gap-3 transition-colors" onclick="selectEwallet('OVO', 'https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo_purple.svg')">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo_purple.svg" alt="OVO" class="h-5 object-contain w-14 object-left">
+                                <span class="font-medium text-gray-700">OVO</span>
+                            </div>
+                            
+                            <div class="px-4 py-3 cursor-pointer hover:bg-orange-50 flex items-center gap-3 transition-colors" onclick="selectEwallet('DANA', 'https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg')">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg" alt="DANA" class="h-5 object-contain w-14 object-left">
+                                <span class="font-medium text-gray-700">DANA</span>
+                            </div>
+                            
+                            <div class="px-4 py-3 cursor-pointer hover:bg-orange-50 flex items-center gap-3 transition-colors" onclick="selectEwallet('ShopeePay', 'https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg')">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg" alt="ShopeePay" class="h-6 object-contain w-14 object-left">
+                                <span class="font-medium text-gray-700">ShopeePay</span>
+                            </div>
+                            
+                            <div class="px-4 py-3 cursor-pointer hover:bg-orange-50 flex items-center gap-3 transition-colors" onclick="selectEwallet('LinkAja', 'https://upload.wikimedia.org/wikipedia/commons/8/85/LinkAja.svg')">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/8/85/LinkAja.svg" alt="LinkAja" class="h-6 object-contain w-14 object-left">
+                                <span class="font-medium text-gray-700">LinkAja</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Akun (Sesuai Aplikasi)</label>
+                    <input type="text" name="nama_pemilik" required placeholder="CONTOH: YANTO"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500 uppercase">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Handphone Terdaftar</label>
+                    <input type="text" name="nomor_kartu" id="nomor_ewallet" required
+                           placeholder="081234567890" maxlength="15" inputmode="numeric"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500">
+                </div>
+                <div class="mt-6 flex justify-end gap-3 pt-4 border-t border-gray-100">
+                    <button type="button" onclick="toggleModal('modalTambahEwallet')" class="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Batal</button>
+                    <button type="submit" class="px-5 py-2 text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600">Tautkan Sekarang</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================== -->
+<!-- MODAL VERIFIKASI PASSWORD (UNTUK KARTU) -->
+<!-- ============================================== -->
 <div id="modalRevealCard" class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900/60 backdrop-blur-sm">
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
@@ -278,6 +404,7 @@
         document.getElementById(modalID).classList.toggle("hidden");
     }
 
+    // Modal Verifikasi Kartu
     function openRevealModal(cardId) {
         currentCardId = cardId;
         document.getElementById('revealPassword').value = '';
@@ -325,7 +452,6 @@
                 return;
             }
 
-            // Tampilkan nomor kartu dengan format spasi tiap 4 digit
             const raw = data.nomor_kartu;
             const formatted = raw.match(/.{1,4}/g).join(' ');
             document.getElementById(`card-number-${currentCardId}`).textContent = formatted;
@@ -335,7 +461,6 @@
             btn.textContent = 'Lihat Detail';
             btn.disabled = false;
 
-            // Sembunyikan lagi setelah 10 detik
             setTimeout(() => {
                 const last4 = raw.slice(-4);
                 document.getElementById(`card-number-${currentCardId}`).textContent = `•••• •••• •••• ${last4}`;
@@ -350,27 +475,74 @@
         }
     }
 
-    // Format Nomor Kartu (spasi tiap 4 digit)
+    // Format Input Nomor Kartu Kredit
     const cardInput = document.getElementById('nomor_kartu');
-    cardInput.addEventListener('input', (e) => {
-        let value = e.target.value.replace(/\D/g, '');
-        value = value.replace(/(.{4})/g, '$1 ').trim();
-        e.target.value = value;
-    });
+    if(cardInput) {
+        cardInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(.{4})/g, '$1 ').trim();
+            e.target.value = value;
+        });
+    }
 
-    // Format Masa Berlaku (tambah / setelah MM)
+    // Format Input Masa Berlaku
     const expiryInput = document.getElementById('masa_berlaku');
-    expiryInput.addEventListener('input', (e) => {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length > 2) {
-            value = value.substring(0, 2) + '/' + value.substring(2, 4);
-        }
-        e.target.value = value;
+    if(expiryInput) {
+        expiryInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+    }
+
+    // Validasi Input E-Wallet (Hanya Angka)
+    const ewalletInput = document.getElementById('nomor_ewallet');
+    if(ewalletInput) {
+        ewalletInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+    }
+
+    // Bersihkan spasi nomor kartu kredit sebelum form disubmit
+    document.querySelectorAll('form[action*="kartu/store"], form[action*="card"]').forEach(form => {
+        form.addEventListener('submit', function() {
+            if(cardInput) {
+                cardInput.value = cardInput.value.replace(/\s/g, '');
+            }
+        });
     });
 
-    // Hapus spasi dari nomor kartu sebelum submit
-    document.querySelector('form[action*="kartu/store"]').addEventListener('submit', function() {
-        cardInput.value = cardInput.value.replace(/\s/g, '');
+    // --- SCRIPT CUSTOM DROPDOWN E-WALLET ---
+    
+    // Fungsi untuk membuka/menutup dropdown
+    function toggleEwalletDropdown() {
+        document.getElementById('ewallet_options').classList.toggle('hidden');
+    }
+
+    // Fungsi ketika salah satu e-wallet dipilih
+    function selectEwallet(providerName, logoUrl) {
+        // 1. Masukkan nilai ke input tersembunyi agar terbaca oleh backend (required)
+        document.getElementById('provider_input').value = providerName;
+        
+        // 2. Ubah tampilan tombol menjadi logo dan nama yang dipilih
+        document.getElementById('selected_ewallet_content').innerHTML = `
+            <img src="${logoUrl}" class="h-5 object-contain w-10 object-left">
+            <span class="font-bold text-gray-800">${providerName}</span>
+        `;
+
+        // 3. Tutup dropdown
+        document.getElementById('ewallet_options').classList.add('hidden');
+    }
+
+    // Tutup dropdown jika user melakukan klik di luar area dropdown
+    document.addEventListener('click', function(event) {
+        const container = document.getElementById('ewallet-select-container');
+        if (container && !container.contains(event.target)) {
+            const options = document.getElementById('ewallet_options');
+            if(options) options.classList.add('hidden');
+        }
     });
 </script>
 @endpush
