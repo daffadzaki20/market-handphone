@@ -99,37 +99,5 @@ class CartController extends Controller
         return response()->json(['status' => 'error', 'message' => 'Gagal mengupdate keranjang'], 404);
     }
 
-    /**
-     * Tampilkan halaman Checkout berdasarkan item yang dipilih
-     */
-    public function checkout(Request $request)
-    {
-        // Pastikan ada barang yang dipilih
-        if (!$request->cart_ids || !is_array($request->cart_ids)) {
-            return redirect()->route('cart.index')->with('error', 'Pilih minimal satu produk untuk di-checkout.');
-        }
 
-        // Ambil data keranjang beserta produknya berdasarkan ID yang diceklis (Khusus milik user yang login)
-        $checkoutItems = Cart::with('product')
-            ->where('user_id', Auth::id())
-            ->whereIn('id', $request->cart_ids)
-            ->get();
-
-        // Jika data keranjangnya kosong setelah difilter
-        if ($checkoutItems->isEmpty()) {
-            return redirect('/cart')->with('error', 'Produk tidak valid.');
-        }
-
-        // Hitung total harga barang
-        $totalHarga = $checkoutItems->sum(function($item) {
-            return ($item->product->price ?? 0) * $item->quantity;
-        });
-
-        // Contoh biaya tambahan (Bisa Anda buat dinamis nanti)
-        $ongkosKirim = 15000;
-        $biayaLayanan = 2500;
-        $grandTotal = $totalHarga + $ongkosKirim + $biayaLayanan;
-
-        return view('user.checkout', compact('checkoutItems', 'totalHarga', 'ongkosKirim', 'biayaLayanan', 'grandTotal'));
-    }
 }

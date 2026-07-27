@@ -97,6 +97,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 
     // ------------------------------------------------------------------
+    // WISHLIST
+    // ------------------------------------------------------------------
+    Route::prefix('wishlist')->name('wishlist.')->group(function () {
+        Route::get('/',               [\App\Http\Controllers\WishlistController::class, 'index'])->name('index');
+        Route::post('/toggle/{id}',   [\App\Http\Controllers\WishlistController::class, 'toggle'])->name('toggle');
+    });
+
+    // ------------------------------------------------------------------
     // CHECKOUT & ORDER (USER)
     // ------------------------------------------------------------------
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
